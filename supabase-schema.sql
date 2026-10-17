@@ -51,13 +51,12 @@ begin
       from public.order_items oi
       where oi.order_id=new.id and oi.variant_id=v.id;
     update public.orders set stock_restored=true where id=new.id;
-    new.stock_restored := true;
   end if;
   return new;
 end; $;
 drop trigger if exists restore_stock_after_order_cancel on public.orders;
 create trigger restore_stock_after_order_cancel
-before update of status on public.orders
+after update of status on public.orders
 for each row execute function public.restore_cancelled_order_stock();
 alter table public.products enable row level security;
 alter table public.product_variants enable row level security;
