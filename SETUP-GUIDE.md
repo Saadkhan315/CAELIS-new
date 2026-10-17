@@ -18,16 +18,16 @@ GitHub repository → Settings → Pages → Deploy from a branch → `main` (or
 4. Sign out and sign in again so a refreshed token includes the new claim.
 5. Open `/admin.html`. Do not use a public profile table or user-editable metadata for authorization; customers must never be able to grant themselves admin rights.
 
-## 4. Manage products
+## 4. Customer orders and order history\nCustomers create an account, sign in, choose a published item and its in-stock size/colour, add it to the bag, complete delivery details and place a cash-on-delivery order. Orders and stock changes are written by the database function. Customers can open Account to view dated order history and item details; admins can update fulfilment status in Store Admin.\n\n## 5. Manage products
 Open `/admin.html`, sign in as the admin, and add a real product, its image URL, PKR price, first size/colour, stock and SKU. Keep a product as Draft until its details and stock are correct. Product images should be your own or licensed images.
 
-## 5. What works / what still needs setup
+## 6. What works / what still needs setup
 - Storefront: reads published products and size/colour stock from Supabase; search, category filters, sorting, local shopping bag and PKR display.
-- Accounts: Supabase email/password sign-up, sign-in, sign-out and recent order display.
-- Admin: role check, product creation/publish/draft/delete, stock display and order status updates.
+- Accounts: Supabase email/password sign-up, sign-in and sign-out; order history shows order number, date/time, status, total, delivery details and item breakdown.
+- Admin: protected role check, product creation/publish/draft/delete, variant stock management and order status updates with customer contact, address, payment status and placed date/time.
 - Cash on delivery: checkout uses the database `place_order` function. It recalculates prices from the database, locks stock rows, rejects unavailable quantities and records an order. Test this carefully before real orders.
 - Online card, EasyPaisa, JazzCash and NayaPay payments are **not integrated**. They require an appropriate payment provider and server-side payment verification. Do not mark orders as paid manually unless funds are verified.
-- Newsletter delivery, email/SMS notifications, shipping fee rules, returns/refunds and legal/business pages need real business details and service configuration before launch.
+- Important before launch: add the real CAELIS contact email, shipping/returns/privacy terms, delivery fee rules and notification service. Online payments need a supported payment gateway, approved merchant account, server-side verification and tested webhook; simply adding a payment button is not enough.
 - This starter has not been independently security-audited. Test with sample data and have a trusted developer review it before taking real customer payments.
 
 ## Troubleshooting
