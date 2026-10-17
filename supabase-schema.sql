@@ -39,6 +39,26 @@ create index if not exists variants_product_idx on public.product_variants(produ
 create index if not exists orders_created_idx on public.orders(created_at desc);
 create index if not exists orders_user_idx on public.orders(user_id,created_at desc);
 create index if not exists order_items_order_idx on public.order_items(order_id);
+
+-- Return stock when an administrator cancels an order; guard against double-restocking.
+alter table public.orders add column if not exists stock_restored boolean not null default false;
+create or replace function public.restore_cancelled_order_stock()
+returns trigger language plpgsql security definer set search_path=public,pg_temp as $
+begin
+  if new.status='cancelled' and old.status is distinct from 'cancelled' and new.stock_restored=false then
+    update public.product_variants v
+      set stock=v.stock+oi.quantity
+      from public.order_items oi
+      where oi.order_id=new.id and oi.variant_id=v.id;
+    update public.orders set stock_restored=true where id=new.id;
+    new.stock_restored := true;
+  end if;
+  return new;
+end; $;
+drop trigger if exists restore_stock_after_order_cancel on public.orders;
+create trigger restore_stock_after_order_cancel
+before update of status on public.orders
+for each row execute function public.restore_cancelled_order_stock();
 alter table public.products enable row level security;
 alter table public.product_variants enable row level security;
 alter table public.orders enable row level security;
