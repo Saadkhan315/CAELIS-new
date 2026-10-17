@@ -1,19 +1,224 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#10100f"><meta name="description" content="CAELIS — considered essentials, made to be worn."><title>CAELIS — Modern Essentials</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="app.js" defer></script></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10100f">
+  <meta name="description" content="CAELIS — considered design, timeless essentials, and modern luxury.">
+  <title>CAELIS — Modern Luxury, Timeless by Nature</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+
 <body>
-<div class="announcement">COMPLIMENTARY SHIPPING ON ORDERS OVER YOUR SET THRESHOLD</div>
-<header class="site-header"><a class="wordmark" href="#home">CAELIS<span>®</span></a><button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button><nav class="main-nav" id="mainNav"><a href="#new-arrivals">New arrivals</a><a href="#collections">Collections</a><a href="#story">Our approach</a></nav><div class="header-actions"><button class="text-button" id="accountButton">Account</button><button class="bag-button" id="bagButton">Bag <span id="cartCount">0</span></button></div></header>
-<main>
-<section class="hero" id="home"><img class="hero-image" src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=2200&q=85" alt="Modern fashion editorial"><div class="hero-shade"></div><div class="hero-content"><p class="eyebrow light">THE NEW WARDROBE</p><h1>Less, but<br><em>better.</em></h1><p class="hero-copy">Thoughtful essentials. Strong silhouettes.<br>Designed for the everyday, elevated.</p><a class="button button-gold" href="#new-arrivals">Discover the collection <span>↗</span></a></div><div class="hero-index"><span>01</span> / COLLECTION NOTES</div></section>
-<section class="intro section-pad"><p class="eyebrow">A QUIETER KIND OF LUXURY</p><p class="intro-line">Built around the pieces you reach for.<br><em>Made to stay in rotation.</em></p></section>
-<section class="collections section-pad" id="collections"><div class="section-heading"><div><p class="eyebrow">EXPLORE CAELIS</p><h2>Considered collections</h2></div><a class="underlined-link" href="#new-arrivals">Shop all products ↗</a></div><div class="collection-grid"><a class="collection-card collection-large" href="#new-arrivals"><img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=1200&q=80" alt="Minimal t-shirt"><span class="collection-caption"><span>01 / ESSENTIALS</span><strong>Everyday, refined</strong></span></a><a class="collection-card" href="#new-arrivals"><img src="https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=1000&q=80" alt="Tailored clothing"><span class="collection-caption"><span>02 / SHIRTS</span><strong>Clean lines</strong></span></a><a class="collection-card" href="#new-arrivals"><img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1000&q=80" alt="Outerwear"><span class="collection-caption"><span>03 / LAYERS</span><strong>Made to layer</strong></span></a></div></section>
-<section class="products-section section-pad" id="new-arrivals"><div class="section-heading"><div><p class="eyebrow">THE CURRENT EDIT</p><h2>New arrivals</h2></div><p class="muted" id="productStatus">Connect the store to load products.</p></div><div id="productGrid" class="product-grid"><div class="loading-card"><span class="loader"></span><p>Loading the collection…</p></div></div></section>
-<section class="story" id="story"><div class="story-image"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1500&q=85" alt="Personal style and fashion"></div><div class="story-copy"><p class="eyebrow light">THE CAELIS APPROACH</p><h2>Wear what<br>matters.</h2><p>We believe the best wardrobe is built with intention: versatile forms, thoughtful details and pieces that work harder for you.</p><a class="underlined-link light-link" href="#contact">Get to know us ↗</a></div></section>
-<section class="newsletter section-pad" id="contact"><p class="eyebrow">STAY IN THE KNOW</p><h2>Good things, occasionally.</h2><p class="muted">Collection updates and notes from CAELIS.</p><form id="newsletterForm" class="newsletter-form"><label class="sr-only" for="newsletterEmail">Email address</label><input id="newsletterEmail" type="email" placeholder="Your email address" required><button class="button button-dark" type="submit">Sign up ↗</button></form><p id="newsletterMessage" class="form-message" aria-live="polite"></p></section>
-</main>
-<footer class="site-footer"><a class="wordmark footer-mark" href="#home">CAELIS<span>®</span></a><p>Modern essentials. Made with intention.</p><div class="footer-links"><a href="#collections">Shop</a><a href="#story">Our approach</a><a href="mailto:hello@example.com">Contact</a><a href="admin.html">Store admin</a></div><small>© <span id="year"></span> CAELIS. All rights reserved.</small></footer>
-<div class="overlay" id="overlay" hidden></div><aside class="drawer" id="cartDrawer" aria-label="Shopping bag" aria-hidden="true"><div class="drawer-head"><div><p class="eyebrow">YOUR SELECTION</p><h2>Your bag</h2></div><button class="close-button" data-close>×</button></div><div id="cartItems" class="cart-items"></div><div class="cart-bottom"><div class="cart-total"><span>Subtotal</span><strong id="cartSubtotal">PKR 0</strong></div><p class="muted tiny">Shipping and any applicable charges are confirmed at checkout.</p><button class="button button-gold full-width" id="checkoutButton">Continue to checkout</button></div></aside>
-<section class="modal" id="accountModal" role="dialog" aria-modal="true" hidden><button class="close-button modal-close" data-close>×</button><p class="eyebrow">YOUR CAELIS ACCOUNT</p><h2>Welcome back.</h2><p class="muted tiny">Sign in or create an account to place and review orders.</p><div class="auth-tabs"><button class="auth-tab active" data-auth-mode="signin">Sign in</button><button class="auth-tab" data-auth-mode="signup">Create account</button></div><form id="authForm" class="stack-form"><label>Email<input id="authEmail" type="email" required></label><label>Password<input id="authPassword" type="password" minlength="8" required></label><button class="button button-dark full-width" id="authSubmit" type="submit">Sign in</button></form><button class="text-button order-history-button" id="ordersButton">View my orders</button><p id="authMessage" class="form-message" aria-live="polite"></p></section>
-<section class="modal checkout-modal" id="checkoutModal" role="dialog" aria-modal="true" hidden><button class="close-button modal-close" data-close>×</button><p class="eyebrow">SECURE CHECKOUT</p><h2>Delivery details</h2><p class="muted tiny" id="checkoutAccountNote">Sign in before placing an order.</p><form id="checkoutForm" class="stack-form"><label>Full name<input id="shippingName" required maxlength="100"></label><label>Email<input id="shippingEmail" type="email" required maxlength="254"></label><label>Phone number<input id="shippingPhone" type="tel" required maxlength="30" placeholder="+92…"></label><label>Address<input id="shippingAddress" required maxlength="300"></label><div class="form-row"><label>City<input id="shippingCity" required maxlength="100"></label><label>Postal code<input id="shippingPostal" maxlength="20"></label></div><label>Country<input id="shippingCountry" value="Pakistan" required maxlength="100"></label><label>Payment method<select id="paymentMethod"><option value="cod">Cash on delivery</option><option value="manual">Manual bank / wallet transfer (verify separately)</option></select></label><div class="checkout-summary"><span>Order total</span><strong id="checkoutTotal">PKR 0</strong></div><button class="button button-gold full-width" id="placeOrderButton" type="submit">Place order</button></form><p id="checkoutMessage" class="form-message" aria-live="polite"></p></section>
-<section class="modal orders-modal" id="ordersModal" role="dialog" aria-modal="true" hidden><button class="close-button modal-close" data-close>×</button><p class="eyebrow">YOUR ACCOUNT</p><h2>Order history</h2><div id="orderHistory" class="order-history"></div></section><div class="toast" id="toast" role="status" aria-live="polite"></div>
-</body></html>
+  <div class="announcement">
+    <p>CAELIS — A MORE CONSIDERED WAY TO DRESS</p>
+  </div>
+
+  <header class="site-header">
+    <a class="wordmark" href="#home" aria-label="CAELIS home">CAELIS<span>®</span></a>
+
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="#collection">Collection</a>
+      <a href="#philosophy">Our philosophy</a>
+      <a href="#craft">The details</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-button search-toggle" aria-label="Search products" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+      </button>
+      <button class="cart-trigger" type="button" aria-label="Open shopping bag">
+        Bag <span class="cart-count">0</span>
+      </button>
+      <button class="menu-toggle icon-button" type="button" aria-label="Open navigation" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18M3 16h18"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="mobile-nav" id="mobileNav" hidden>
+    <a href="#collection">Collection</a>
+    <a href="#philosophy">Our philosophy</a>
+    <a href="#craft">The details</a>
+  </div>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-image" role="img" aria-label="Minimal editorial fashion in a warm architectural setting"></div>
+      <div class="hero-shade"></div>
+
+      <div class="hero-content">
+        <p class="eyebrow">THE ART OF LESS</p>
+        <h1>Wear what<br><em>matters.</em></h1>
+        <p class="hero-copy">Modern essentials. Considered details.<br>Made for a life beyond trends.</p>
+        <a class="button button-light" href="#collection">Explore CAELIS <span>↗</span></a>
+      </div>
+
+      <div class="hero-bottom">
+        <span>DESIGNED WITH INTENTION</span>
+        <span>01 — TIMELESS BY NATURE</span>
+      </div>
+    </section>
+
+    <section class="intro section-shell" id="philosophy">
+      <p class="eyebrow">THE CAELIS POINT OF VIEW</p>
+      <h2>Less, but <em>better.</em></h2>
+      <p class="intro-copy">
+        We believe personal style is not about having more.
+        It is about choosing well — thoughtful silhouettes,
+        considered details, and pieces that feel like your own.
+      </p>
+      <div class="gold-rule"></div>
+    </section>
+
+    <section class="collection section-shell" id="collection">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">THE EDIT</p>
+          <h2>Your next <em>essential.</em></h2>
+        </div>
+        <p class="muted-heading">A collection that speaks quietly.</p>
+      </div>
+
+      <div class="catalogue-tools">
+        <div class="category-filters" aria-label="Filter products">
+          <button class="filter-button active" data-category="all" type="button">All pieces</button>
+          <button class="filter-button" data-category="shirts" type="button">Shirts</button>
+          <button class="filter-button" data-category="t-shirts" type="button">T-shirts</button>
+          <button class="filter-button" data-category="essentials" type="button">Essentials</button>
+        </div>
+
+        <label class="sort-control">
+          <span>Sort</span>
+          <select id="sortProducts" aria-label="Sort products">
+            <option value="featured">Featured</option>
+            <option value="price-low">Price: low to high</option>
+            <option value="price-high">Price: high to low</option>
+            <option value="name">Name</option>
+          </select>
+        </label>
+      </div>
+
+      <form class="search-panel" id="searchForm" role="search" hidden>
+        <label class="visually-hidden" for="productSearch">Search products</label>
+        <input id="productSearch" type="search" placeholder="Search the collection..." autocomplete="off">
+        <button class="text-button" type="submit">Search ↗</button>
+        <button class="text-button" id="closeSearch" type="button">Close</button>
+      </form>
+
+      <div class="product-grid" id="productGrid" aria-live="polite"></div>
+
+      <div class="empty-catalogue" id="emptyCatalogue">
+        <span class="empty-symbol">C.</span>
+        <p class="eyebrow">THE NEXT CHAPTER IS YOURS</p>
+        <h3>Your collection starts here.</h3>
+        <p>Our catalogue is being prepared. Your own CAELIS products will appear here when you add them.</p>
+      </div>
+    </section>
+
+    <section class="campaign" id="craft">
+      <div class="campaign-image" role="img" aria-label="Neutral-toned fashion and architectural textures"></div>
+      <div class="campaign-content">
+        <p class="eyebrow">A CLOSER LOOK</p>
+        <h2>Details make<br><em>the difference.</em></h2>
+        <p>From the feel of a fabric to the way a piece sits, every detail should have a reason to be there.</p>
+        <a class="underlined-link" href="#collection">Discover the CAELIS approach <span>↗</span></a>
+      </div>
+    </section>
+
+    <section class="values section-shell">
+      <div class="value-item">
+        <span class="value-number">01</span>
+        <h3>Considered design</h3>
+        <p>Clean lines and purposeful details, without unnecessary noise.</p>
+      </div>
+      <div class="value-item">
+        <span class="value-number">02</span>
+        <h3>Everyday refinement</h3>
+        <p>Modern pieces designed to feel natural in your everyday life.</p>
+      </div>
+      <div class="value-item">
+        <span class="value-number">03</span>
+        <h3>Your own expression</h3>
+        <p>Personal style, built around what you choose and how you wear it.</p>
+      </div>
+    </section>
+
+    <section class="newsletter">
+      <p class="eyebrow">LETTERS FROM CAELIS</p>
+      <h2>Stay in the <em>know.</em></h2>
+      <p>News, collection releases, and considered inspiration.</p>
+      <form id="newsletterForm" class="newsletter-form">
+        <label class="visually-hidden" for="newsletterEmail">Your email address</label>
+        <input id="newsletterEmail" type="email" placeholder="Your email address" required>
+        <button type="submit" aria-label="Join the mailing list">Join ↗</button>
+      </form>
+      <p class="form-message" id="newsletterMessage" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <a class="wordmark footer-wordmark" href="#home">CAELIS<span>®</span></a>
+        <p>Modern luxury.<br>Timeless by nature.</p>
+      </div>
+
+      <div class="footer-column">
+        <p class="footer-title">EXPLORE</p>
+        <a href="#collection">Collection</a>
+        <a href="#philosophy">Our philosophy</a>
+        <a href="#craft">The details</a>
+      </div>
+
+      <div class="footer-column">
+        <p class="footer-title">INFORMATION</p>
+        <a href="mailto:hello@caelis.com">Contact</a>
+        <a href="#shipping-info">Shipping information</a>
+        <a href="#returns-info">Returns information</a>
+      </div>
+
+      <div class="footer-column">
+        <p class="footer-title">FOLLOW THE JOURNEY</p>
+        <a href="#instagram" aria-label="Instagram link to be configured">Instagram ↗</a>
+        <a href="#facebook" aria-label="Facebook link to be configured">Facebook ↗</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="currentYear"></span> CAELIS. All rights reserved.</span>
+      <span>DESIGNED WITH INTENTION.</span>
+    </div>
+  </footer>
+
+  <div class="overlay" id="overlay" hidden></div>
+
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping bag" aria-hidden="true">
+    <div class="drawer-heading">
+      <div>
+        <p class="eyebrow">YOUR SELECTION</p>
+        <h2>Your bag <span class="cart-count">0</span></h2>
+      </div>
+      <button class="close-drawer icon-button" type="button" aria-label="Close shopping bag">×</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-empty" id="cartEmpty">
+      <p>Your bag is waiting for something considered.</p>
+      <button class="button button-dark" id="continueShopping" type="button">Explore collection</button>
+    </div>
+    <div class="cart-summary" id="cartSummary" hidden>
+      <div class="subtotal-row"><span>Subtotal</span><strong id="cartSubtotal">Rs 0</strong></div>
+      <p>Shipping and payment options are confirmed at checkout.</p>
+      <button class="button button-dark full-width" id="checkoutButton" type="button">Continue to checkout</button>
+      <p class="checkout-note">Checkout becomes available after secure order processing is configured.</p>
+    </div>
+  </aside>
+
+  <div class="notice" id="notice" role="status" aria-live="polite"></div>
+</body>
+</html>
