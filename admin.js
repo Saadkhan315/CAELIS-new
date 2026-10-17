@@ -47,8 +47,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const {data,error}=await db.from("orders").select("id,order_number,customer_name,customer_email,customer_phone,shipping_address,city,postal_code,country,payment_method,payment_status,status,total_pkr,created_at").order("created_at",{ascending:false}).limit(50);
     if(error){box.textContent="Could not load orders: "+error.message;return;} box.replaceChildren();
     if(!data?.length){box.textContent="No orders yet.";return;}
-    data.forEach(o=>{const row=document.createElement("article");row.className="admin-list-item";row.innerHTML="<div><strong>"+escape(o.order_number)+" · "+escape(o.customer_name)+"</strong><p>"+escape(o.customer_phone)+" · "+escape(o.customer_email)+"</p><p>"+escape(o.shipping_address)+", "+escape(o.city)+(o.postal_code?" "+escape(o.postal_code):"")+", "+escape(o.country)+"</p><p>"+money(o.total_pkr)+" · "+escape(o.payment_method)+" · "+escape(o.payment_status)+"</p><p>Placed: "+escape(dateTime(o.created_at))+" · Status: "+escape(o.status)+"</p></div><div class='admin-item-actions'><select aria-label='Order status' data-order-status='"+o.id+"'>"+["pending","confirmed","processing","shipped","delivered","cancelled"].map(s=>"<option "+(s===o.status?"selected":"")+" value='"+s+"'>"+s+"</option>").join("")+"</select><button type='button' data-save-order='"+o.id+"'>Update</button></div>";box.appendChild(row);});
+    data.forEach(o=>{const row=document.createElement("article");row.className="admin-list-item";row.innerHTML="<div><strong>"+escape(o.order_number)+" · "+escape(o.customer_name)+"</strong><p>"+escape(o.customer_phone)+" · "+escape(o.customer_email)+"</p><p>"+escape(o.shipping_address)+", "+escape(o.city)+(o.postal_code?" "+escape(o.postal_code):"")+", "+escape(o.country)+"</p><p>"+money(o.total_pkr)+" · "+escape(o.payment_method)+" · "+escape(o.payment_status)+"</p><p>Placed: "+escape(dateTime(o.created_at))+" · Status: "+escape(o.status)+"</p><button type='button' data-view-order-items='"+o.id+"'>View items</button><div class='admin-order-items' hidden></div></div><div class='admin-item-actions'><select aria-label='Order status' data-order-status='"+o.id+"'>"+["pending","confirmed","processing","shipped","delivered","cancelled"].map(s=>"<option "+(s===o.status?"selected":"")+" value='"+s+"'>"+s+"</option>").join("")+"</select><button type='button' data-save-order='"+o.id+"'>Update</button></div>";box.appendChild(row);});
     box.querySelectorAll("[data-save-order]").forEach(b=>b.addEventListener("click",async()=>{const id=b.dataset.saveOrder, value=box.querySelector("[data-order-status='"+id+"']").value;const {error}=await db.from("orders").update({status:value}).eq("id",id);if(error)say("adminStatus",error.message);else {say("adminStatus","Order status updated.");await loadOrders();}}));
+    box.querySelectorAll("[data-view-order-items]").forEach(b=>b.addEventListener("click",async()=>{
+      const target=b.nextElementSibling;
+      if(!target.hidden){target.hidden=true;b.textContent="View items";return;}
+      target.hidden=false;target.textContent="Loading items…";b.disabled=true;
+      const {data:items,error}=await db.from("order_items").select("product_name,sku,size,color,unit_price_pkr,quantity,line_total_pkr").eq("order_id",b.dataset.viewOrderItems);
+      b.disabled=false;
+      if(error){target.textContent="Could not load order items: "+error.message;return;}
+      target.innerHTML=(items||[]).map(i=>"<p>"+escape(i.product_name)+" · "+escape(i.color)+" / "+escape(i.size)+" × "+Number(i.quantity)+" · SKU "+escape(i.sku)+" — "+money(i.line_total_pkr)+"</p>").join("")||"No order items.";
+      b.textContent="Hide items";
+    }));
   }
   $("refreshProducts").addEventListener("click",loadProducts); $("refreshOrders").addEventListener("click",loadOrders);
   start();
