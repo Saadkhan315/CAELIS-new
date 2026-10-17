@@ -1,500 +1,54 @@
 "use strict";
-
-/*
-  CAELIS — Frontend interactions
-
-  The product catalogue intentionally starts empty.
-  Real products, secure admin access, database storage,
-  payment processing and order management require a backend.
-*/
-
-const CAELIS_CONFIG = {
-  currency: "PKR",
-  locale: "en-PK"
-};
-
-// Add your real products here later, or load them from your database.
-// Do not put private keys, passwords or secret API credentials here.
-const products = [];
-
-const state = {
-  category: "all",
-  search: "",
-  sort: "featured",
-  cart: loadCart()
-};
-
-const elements = {
-  grid: document.getElementById("productGrid"),
-  emptyCatalogue: document.getElementById("emptyCatalogue"),
-  filters: document.querySelectorAll(".filter-button"),
-  sort: document.getElementById("sortProducts"),
-  searchForm: document.getElementById("searchForm"),
-  searchInput: document.getElementById("productSearch"),
-  searchToggle: document.querySelector(".search-toggle"),
-  closeSearch: document.getElementById("closeSearch"),
-  menuToggle: document.querySelector(".menu-toggle"),
-  mobileNav: document.getElementById("mobileNav"),
-  cartDrawer: document.getElementById("cartDrawer"),
-  cartTrigger: document.querySelector(".cart-trigger"),
-  closeDrawer: document.querySelector(".close-drawer"),
-  overlay: document.getElementById("overlay"),
-  cartItems: document.getElementById("cartItems"),
-  cartEmpty: document.getElementById("cartEmpty"),
-  cartSummary: document.getElementById("cartSummary"),
-  cartSubtotal: document.getElementById("cartSubtotal"),
-  continueShopping: document.getElementById("continueShopping"),
-  checkoutButton: document.getElementById("checkoutButton"),
-  notice: document.getElementById("notice"),
-  newsletterForm: document.getElementById("newsletterForm"),
-  newsletterEmail: document.getElementById("newsletterEmail"),
-  newsletterMessage: document.getElementById("newsletterMessage"),
-  currentYear: document.getElementById("currentYear")
-};
-
-function formatPrice(amount) {
-  return new Intl.NumberFormat(CAELIS_CONFIG.locale, {
-    style: "currency",
-    currency: CAELIS_CONFIG.currency,
-    maximumFractionDigits: 0
-  }).format(amount);
-}
-
-function loadCart() {
-  try {
-    const saved = localStorage.getItem("caelis-cart");
-
-    if (!saved) return [];
-
-    const parsed = JSON.parse(saved);
-
-    if (!Array.isArray(parsed)) return [];
-
-    return parsed.filter(item =>
-      item &&
-      typeof item.id === "string" &&
-      Number.isInteger(item.quantity) &&
-      item.quantity > 0
-    );
-  } catch {
-    return [];
+document.addEventListener("DOMContentLoaded", () => {
+  const $ = id => document.getElementById(id);
+  const configured = window.supabase && window.CAELIS_SUPABASE_URL && window.CAELIS_SUPABASE_ANON_KEY && !String(window.CAELIS_SUPABASE_URL).includes("PASTE_") && !String(window.CAELIS_SUPABASE_ANON_KEY).includes("PASTE_");
+  const db = configured ? window.supabase.createClient(window.CAELIS_SUPABASE_URL, window.CAELIS_SUPABASE_ANON_KEY) : null;
+  const say = (id, message) => { $(id).textContent = message; };
+  const money = n => new Intl.NumberFormat("en-PK",{style:"currency",currency:"PKR",maximumFractionDigits:0}).format(Number(n)||0);
+  const escape = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  async function start() {
+    if (!db) { say("adminStatus","Supabase is not configured. Create supabase-config.js using the example file."); $("adminLoginPanel").hidden=false; $("adminWorkspace").hidden=true; return; }
+    const { data, error } = await db.auth.getUser();
+    if (error || !data.user) { say("adminStatus","Sign in with the account assigned the protected admin role."); $("adminLoginPanel").hidden=false; $("adminWorkspace").hidden=true; return; }
+    const role = data.user.app_metadata?.role;
+    if (role !== "admin") { say("adminStatus","Access denied. This account does not have app_metadata.role = admin. Assign it through trusted Supabase admin controls."); $("adminLoginPanel").hidden=true; $("adminWorkspace").hidden=true; return; }
+    say("adminStatus","Authenticated as store administrator."); $("adminLoginPanel").hidden=true; $("adminWorkspace").hidden=false;
+    await Promise.all([loadProducts(),loadOrders()]);
   }
-}
-
-function saveCart() {
-  try {
-    localStorage.setItem("caelis-cart", JSON.stringify(state.cart));
-  } catch {
-    showNotice("Your browser could not save the bag on this device.");
-  }
-}
-
-function showNotice(message) {
-  elements.notice.textContent = message;
-  elements.notice.classList.add("visible");
-
-  window.clearTimeout(showNotice.timer);
-
-  showNotice.timer = window.setTimeout(() => {
-    elements.notice.classList.remove("visible");
-  }, 3200);
-}
-
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, character => {
-    const entities = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    };
-
-    return entities[character];
+  $("adminLogin").addEventListener("submit", async e => { e.preventDefault(); if(!db)return; say("loginMessage","Signing in…"); const {error}=await db.auth.signInWithPassword({email:$("adminEmail").value.trim(),password:$("adminPassword").value}); say("loginMessage",error?error.message:"Signed in."); await start(); });
+  $("signOutButton").addEventListener("click", async () => { if(db) await db.auth.signOut(); $("adminWorkspace").hidden=true; $("adminLoginPanel").hidden=false; say("adminStatus","Signed out."); });
+  $("productForm").addEventListener("submit", async e => {
+    e.preventDefault(); if(!db)return;
+    const name=$("pName").value.trim(), category=$("pCategory").value.trim().toLowerCase().replace(/\s+/g,"-"), description=$("pDescription").value.trim(), image=$("pImage").value.trim(), price=Number($("vPrice").value), size=$("vSize").value.trim(), color=$("vColor").value.trim(), stock=Number($("vStock").value), sku=$("vSku").value.trim() || ("CA-"+crypto.randomUUID().slice(0,8).toUpperCase());
+    if(!name || !size || !color || !Number.isFinite(price) || price<1 || !Number.isInteger(stock) || stock<0){say("productMessage","Check the product name, price, size, colour and stock.");return;}
+    $("saveProductButton").disabled=true; say("productMessage","Saving product…");
+    const slug=name.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+crypto.randomUUID().slice(0,6);
+    const {data:product,error:pe}=await db.from("products").insert({slug,name,description,category,price_pkr:price,image_url:image||null,active:$("pPublished").value==="true"}).select().single();
+    if(pe){say("productMessage","Product not saved: "+pe.message);$("saveProductButton").disabled=false;return;}
+    const {error:ve}=await db.from("product_variants").insert({product_id:product.id,size,color,sku,stock});
+    $("saveProductButton").disabled=false;
+    if(ve){say("productMessage","Product was created, but its size/colour stock failed: "+ve.message+" Check the schema.");return;}
+    say("productMessage","Saved. Your product is in the catalogue."); $("productForm").reset(); await loadProducts();
   });
-}
-
-function getAvailableProducts() {
-  let result = products.filter(product => {
-    const matchesCategory =
-      state.category === "all" ||
-      product.category === state.category;
-
-    const searchableText = [
-      product.name || "",
-      product.description || "",
-      product.category || ""
-    ].join(" ").toLowerCase();
-
-    const matchesSearch = searchableText.includes(
-      state.search.trim().toLowerCase()
-    );
-
-    return matchesCategory && matchesSearch;
-  });
-
-  if (state.sort === "price-low") {
-    result.sort((a, b) => a.price - b.price);
-  } else if (state.sort === "price-high") {
-    result.sort((a, b) => b.price - a.price);
-  } else if (state.sort === "name") {
-    result.sort((a, b) => a.name.localeCompare(b.name));
+  async function loadProducts() {
+    const box=$("adminProducts"); box.textContent="Loading…";
+    const {data,error}=await db.from("products").select("id,name,category,price_pkr,active,product_variants(id,size,color,sku,stock)").order("created_at",{ascending:false});
+    if(error){box.textContent="Could not load products: "+error.message;return;} box.replaceChildren();
+    if(!data?.length){box.textContent="No products yet. Add your first real CAELIS product above.";return;}
+    data.forEach(p=>{const card=document.createElement("article");card.className="admin-list-item";const variants=(p.product_variants||[]).map(v=>"<div class='stock-edit'><label>"+escape(v.size)+" / "+escape(v.color)+" · "+escape(v.sku)+"<input type='number' min='0' step='1' value='"+Number(v.stock)+"' data-stock-value='"+v.id+"' aria-label='Stock for "+escape(v.size)+" "+escape(v.color)+"'></label><button type='button' data-stock-save='"+v.id+"'>Save stock</button></div>").join("");card.innerHTML="<div><strong>"+escape(p.name)+"</strong><p>"+escape(p.category)+" · "+money(p.price_pkr)+" · "+(p.active?"Published":"Draft")+"</p><div class='stock-edit-list'>"+(variants||"<p>No variants yet.</p>")+"</div></div><div class='admin-item-actions'><button type='button' data-add-variant='"+p.id+"'>Add size / colour</button><button type='button' data-publish='"+p.id+"' data-active='"+(!p.active)+"'>"+(p.active?"Unpublish":"Publish")+"</button><button type='button' data-delete='"+p.id+"'>Delete</button></div>";box.appendChild(card);});
+    box.querySelectorAll("[data-stock-save]").forEach(b=>b.addEventListener("click",async()=>{const input=box.querySelector("[data-stock-value='"+b.dataset.stockSave+"']");const stock=Number(input.value);if(!Number.isInteger(stock)||stock<0){say("adminStatus","Stock must be a whole number of zero or more.");return;}b.disabled=true;const {error}=await db.from("product_variants").update({stock}).eq("id",b.dataset.stockSave);b.disabled=false;if(error)say("adminStatus","Stock was not saved: "+error.message);else say("adminStatus","Stock updated.");}));
+    box.querySelectorAll("[data-add-variant]").forEach(b=>b.addEventListener("click",async()=>{const size=prompt("Size (for example S, M, L, XL):");if(!size||!size.trim())return;const color=prompt("Colour (for example Black):");if(!color||!color.trim())return;const stockText=prompt("Opening stock (whole number):","0");if(stockText===null)return;const stock=Number(stockText);if(!Number.isInteger(stock)||stock<0){say("adminStatus","Stock must be a whole number of zero or more.");return;}const sku=prompt("Unique SKU:",("CA-"+crypto.randomUUID().slice(0,8).toUpperCase()));if(!sku||!sku.trim())return;const {error}=await db.from("product_variants").insert({product_id:b.dataset.addVariant,size:size.trim(),color:color.trim(),sku:sku.trim(),stock});if(error)say("adminStatus","Variant was not saved: "+error.message);else {say("adminStatus","Size/colour variant added.");await loadProducts();}}));
+    box.querySelectorAll("[data-publish]").forEach(b=>b.addEventListener("click",async()=>{const {error}=await db.from("products").update({active:b.dataset.active==="true"}).eq("id",b.dataset.publish);if(error)say("adminStatus",error.message);else await loadProducts();}));
+    box.querySelectorAll("[data-delete]").forEach(b=>b.addEventListener("click",async()=>{if(!confirm("Delete this product and its variants?"))return;const {error}=await db.from("products").delete().eq("id",b.dataset.delete);if(error)say("adminStatus",error.message);else await loadProducts();}));
   }
-
-  return result;
-}
-
-function renderProducts() {
-  const visibleProducts = getAvailableProducts();
-
-  elements.grid.replaceChildren();
-  elements.emptyCatalogue.hidden = visibleProducts.length > 0;
-
-  if (visibleProducts.length === 0) {
-    return;
+  async function loadOrders() {
+    const box=$("adminOrders"); box.textContent="Loading…";
+    const {data,error}=await db.from("orders").select("id,order_number,customer_name,customer_phone,city,status,total_pkr,created_at").order("created_at",{ascending:false}).limit(50);
+    if(error){box.textContent="Could not load orders: "+error.message;return;} box.replaceChildren();
+    if(!data?.length){box.textContent="No orders yet.";return;}
+    data.forEach(o=>{const row=document.createElement("article");row.className="admin-list-item";row.innerHTML="<div><strong>"+escape(o.order_number)+" · "+escape(o.customer_name)+"</strong><p>"+escape(o.customer_phone)+" · "+escape(o.city)+" · "+money(o.total_pkr)+"</p><p>Status: "+escape(o.status)+"</p></div><div class='admin-item-actions'><select aria-label='Order status' data-order-status='"+o.id+"'>"+["pending","confirmed","processing","shipped","delivered","cancelled"].map(s=>"<option "+(s===o.status?"selected":"")+" value='"+s+"'>"+s+"</option>").join("")+"</select><button type='button' data-save-order='"+o.id+"'>Update</button></div>";box.appendChild(row);});
+    box.querySelectorAll("[data-save-order]").forEach(b=>b.addEventListener("click",async()=>{const id=b.dataset.saveOrder, value=box.querySelector("[data-order-status='"+id+"']").value;const {error}=await db.from("orders").update({status:value}).eq("id",id);if(error)say("adminStatus",error.message);else {say("adminStatus","Order status updated.");await loadOrders();}}));
   }
-
-  visibleProducts.forEach((product, index) => {
-    const card = document.createElement("article");
-    card.className = "product-card";
-    card.style.animationDelay = `${Math.min(index * 70, 350)}ms`;
-
-    const image = escapeHTML(product.image || "");
-    const name = escapeHTML(product.name || "CAELIS piece");
-    const description = escapeHTML(product.description || "");
-    const category = escapeHTML(product.category || "essentials");
-    const price = formatPrice(Number(product.price) || 0);
-    const id = escapeHTML(product.id);
-
-    card.innerHTML = `
-      <div class="product-image-wrap">
-        ${
-          image
-            ? `<img class="product-image" src="${image}" alt="${name}" loading="lazy">`
-            : `<div class="product-image" aria-label="Product image not yet available"></div>`
-        }
-        ${
-          product.tag
-            ? `<span class="product-tag">${escapeHTML(product.tag)}</span>`
-            : ""
-        }
-      </div>
-
-      <div class="product-info">
-        <div class="product-name-row">
-          <h3 class="product-name">${name}</h3>
-          <span class="product-price">${price}</span>
-        </div>
-
-        <p class="product-description">${description}</p>
-
-        <div class="product-meta">
-          <span>${category.replace("-", " ")}</span>
-          <span>${Number(product.stock) > 0 ? "Available" : "Sold out"}</span>
-        </div>
-
-        <button
-          class="add-to-bag"
-          type="button"
-          data-add="${id}"
-          ${Number(product.stock) < 1 ? "disabled" : ""}
-        >
-          ${Number(product.stock) > 0 ? "Add to bag +" : "Sold out"}
-        </button>
-      </div>
-    `;
-
-    elements.grid.appendChild(card);
-  });
-}
-
-function updateCartCount() {
-  const count = state.cart.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
-
-  document.querySelectorAll(".cart-count").forEach(counter => {
-    counter.textContent = String(count);
-  });
-}
-
-function renderCart() {
-  elements.cartItems.replaceChildren();
-
-  const validItems = state.cart
-    .map(item => ({
-      ...item,
-      product: products.find(product => product.id === item.id)
-    }))
-    .filter(item => item.product);
-
-  state.cart = validItems.map(item => ({
-    id: item.id,
-    quantity: Math.min(item.quantity, 99)
-  }));
-
-  saveCart();
-  updateCartCount();
-
-  const isEmpty = validItems.length === 0;
-
-  elements.cartEmpty.hidden = !isEmpty;
-  elements.cartSummary.hidden = isEmpty;
-
-  let subtotal = 0;
-
-  validItems.forEach(({ product, quantity }) => {
-    subtotal += product.price * quantity;
-
-    const line = document.createElement("article");
-    line.className = "cart-line";
-
-    const image = escapeHTML(product.image || "");
-    const name = escapeHTML(product.name);
-    const id = escapeHTML(product.id);
-
-    line.innerHTML = `
-      ${
-        image
-          ? `<img src="${image}" alt="${name}" loading="lazy">`
-          : `<div aria-hidden="true"></div>`
-      }
-      <div>
-        <h3>${name}</h3>
-        <p>${formatPrice(product.price)}</p>
-        <div class="cart-line-actions">
-          <button class="quantity-button" data-quantity="-1" data-id="${id}" aria-label="Decrease quantity">−</button>
-          <span>${quantity}</span>
-          <button class="quantity-button" data-quantity="1" data-id="${id}" aria-label="Increase quantity">+</button>
-          <button class="remove-item" data-remove="${id}" type="button">Remove</button>
-        </div>
-      </div>
-    `;
-
-    elements.cartItems.appendChild(line);
-  });
-
-  elements.cartSubtotal.textContent = formatPrice(subtotal);
-}
-
-function addToCart(productId) {
-  const product = products.find(item => item.id === productId);
-
-  if (!product) {
-    showNotice("This product is not available.");
-    return;
-  }
-
-  const existing = state.cart.find(item => item.id === productId);
-  const currentQuantity = existing ? existing.quantity : 0;
-
-  if (currentQuantity >= Number(product.stock)) {
-    showNotice("The available stock limit has been reached.");
-    return;
-  }
-
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    state.cart.push({
-      id: productId,
-      quantity: 1
-    });
-  }
-
-  saveCart();
-  renderCart();
-  showNotice(`${product.name} added to your bag.`);
-}
-
-function changeQuantity(productId, amount) {
-  const item = state.cart.find(entry => entry.id === productId);
-  const product = products.find(entry => entry.id === productId);
-
-  if (!item || !product) return;
-
-  const nextQuantity = item.quantity + amount;
-
-  if (nextQuantity <= 0) {
-    state.cart = state.cart.filter(entry => entry.id !== productId);
-  } else if (nextQuantity <= Number(product.stock)) {
-    item.quantity = nextQuantity;
-  } else {
-    showNotice("The requested quantity exceeds available stock.");
-  }
-
-  saveCart();
-  renderCart();
-}
-
-function openCart() {
-  elements.overlay.hidden = false;
-  elements.cartDrawer.classList.add("open");
-  elements.cartDrawer.setAttribute("aria-hidden", "false");
-  document.body.classList.add("drawer-open");
-  renderCart();
-  elements.closeDrawer.focus();
-}
-
-function closeCart() {
-  elements.cartDrawer.classList.remove("open");
-  elements.cartDrawer.setAttribute("aria-hidden", "true");
-  elements.overlay.hidden = true;
-  document.body.classList.remove("drawer-open");
-  elements.cartTrigger.focus();
-}
-
-function toggleMobileMenu() {
-  const isOpen = !elements.mobileNav.hidden;
-
-  elements.mobileNav.hidden = isOpen;
-  elements.menuToggle.setAttribute("aria-expanded", String(!isOpen));
-  elements.menuToggle.setAttribute(
-    "aria-label",
-    isOpen ? "Open navigation" : "Close navigation"
-  );
-}
-
-function setCategory(category) {
-  state.category = category;
-
-  elements.filters.forEach(button => {
-    const active = button.dataset.category === category;
-
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
-  });
-
-  renderProducts();
-}
-
-elements.filters.forEach(button => {
-  button.setAttribute(
-    "aria-pressed",
-    String(button.dataset.category === state.category)
-  );
-
-  button.addEventListener("click", () => {
-    setCategory(button.dataset.category);
-  });
+  $("refreshProducts").addEventListener("click",loadProducts); $("refreshOrders").addEventListener("click",loadOrders);
+  start();
 });
-
-elements.sort.addEventListener("change", event => {
-  state.sort = event.target.value;
-  renderProducts();
-});
-
-elements.searchToggle.addEventListener("click", () => {
-  elements.searchForm.hidden = !elements.searchForm.hidden;
-
-  if (!elements.searchForm.hidden) {
-    elements.searchInput.focus();
-  } else {
-    state.search = "";
-    elements.searchInput.value = "";
-    renderProducts();
-  }
-});
-
-elements.searchForm.addEventListener("submit", event => {
-  event.preventDefault();
-  state.search = elements.searchInput.value;
-  renderProducts();
-});
-
-elements.searchInput.addEventListener("input", event => {
-  state.search = event.target.value;
-  renderProducts();
-});
-
-elements.closeSearch.addEventListener("click", () => {
-  elements.searchForm.hidden = true;
-  elements.searchInput.value = "";
-  state.search = "";
-  renderProducts();
-});
-
-elements.grid.addEventListener("click", event => {
-  const button = event.target.closest("[data-add]");
-
-  if (button) {
-    addToCart(button.dataset.add);
-  }
-});
-
-elements.cartItems.addEventListener("click", event => {
-  const quantityButton = event.target.closest("[data-quantity]");
-  const removeButton = event.target.closest("[data-remove]");
-
-  if (quantityButton) {
-    changeQuantity(
-      quantityButton.dataset.id,
-      Number(quantityButton.dataset.quantity)
-    );
-  }
-
-  if (removeButton) {
-    state.cart = state.cart.filter(
-      item => item.id !== removeButton.dataset.remove
-    );
-
-    saveCart();
-    renderCart();
-  }
-});
-
-elements.cartTrigger.addEventListener("click", openCart);
-elements.closeDrawer.addEventListener("click", closeCart);
-elements.overlay.addEventListener("click", closeCart);
-
-elements.continueShopping.addEventListener("click", () => {
-  closeCart();
-  document.getElementById("collection").scrollIntoView({
-    behavior: "smooth"
-  });
-});
-
-elements.menuToggle.addEventListener("click", toggleMobileMenu);
-
-elements.mobileNav.addEventListener("click", event => {
-  if (event.target.closest("a")) {
-    elements.mobileNav.hidden = true;
-    elements.menuToggle.setAttribute("aria-expanded", "false");
-    elements.menuToggle.setAttribute("aria-label", "Open navigation");
-  }
-});
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape" &&
-      elements.cartDrawer.classList.contains("open")) {
-    closeCart();
-  } else if (event.key === "Escape" &&
-             !elements.searchForm.hidden) {
-    elements.searchForm.hidden = true;
-  }
-});
-
-elements.checkoutButton.addEventListener("click", () => {
-  showNotice(
-    "Secure checkout is not connected yet. Connect your backend before accepting orders."
-  );
-});
-
-/*
-  The newsletter form is intentionally not presented as a real
-  subscription until a mailing-list service or backend is connected.
-*/
-elements.newsletterForm.addEventListener("submit", event => {
-  event.preventDefault();
-
-  if (!elements.newsletterForm.reportValidity()) return;
-
-  elements.newsletterMessage.textContent =
-    "The mailing list is not connected yet. Please check back soon.";
-});
-
-elements.currentYear.textContent = String(new Date().getFullYear());
-
-renderProducts();
-renderCart();
