@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const $ = id => document.getElementById(id);
   const configured = window.supabase && window.CAELIS_SUPABASE_URL && window.CAELIS_SUPABASE_ANON_KEY && !String(window.CAELIS_SUPABASE_URL).includes("PASTE_") && !String(window.CAELIS_SUPABASE_ANON_KEY).includes("PASTE_");
   const db = configured ? window.supabase.createClient(window.CAELIS_SUPABASE_URL, window.CAELIS_SUPABASE_ANON_KEY) : null;
-  const say = (id, message) => { $(id).textContent = message; };
+  const say = (id, message) => { $(id).textContent = message; };\n  const dateTime = v => v ? new Intl.DateTimeFormat("en-PK",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v)) : "Date unavailable";
   const money = n => new Intl.NumberFormat("en-PK",{style:"currency",currency:"PKR",maximumFractionDigits:0}).format(Number(n)||0);
   const escape = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   async function start() {
@@ -43,10 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   async function loadOrders() {
     const box=$("adminOrders"); box.textContent="Loading…";
-    const {data,error}=await db.from("orders").select("id,order_number,customer_name,customer_phone,city,status,total_pkr,created_at").order("created_at",{ascending:false}).limit(50);
+    const {data,error}=await db.from("orders").select("id,order_number,customer_name,customer_email,customer_phone,shipping_address,city,postal_code,country,payment_method,payment_status,status,total_pkr,created_at").order("created_at",{ascending:false}).limit(50);
     if(error){box.textContent="Could not load orders: "+error.message;return;} box.replaceChildren();
     if(!data?.length){box.textContent="No orders yet.";return;}
-    data.forEach(o=>{const row=document.createElement("article");row.className="admin-list-item";row.innerHTML="<div><strong>"+escape(o.order_number)+" · "+escape(o.customer_name)+"</strong><p>"+escape(o.customer_phone)+" · "+escape(o.city)+" · "+money(o.total_pkr)+"</p><p>Status: "+escape(o.status)+"</p></div><div class='admin-item-actions'><select aria-label='Order status' data-order-status='"+o.id+"'>"+["pending","confirmed","processing","shipped","delivered","cancelled"].map(s=>"<option "+(s===o.status?"selected":"")+" value='"+s+"'>"+s+"</option>").join("")+"</select><button type='button' data-save-order='"+o.id+"'>Update</button></div>";box.appendChild(row);});
+    data.forEach(o=>{const row=document.createElement("article");row.className="admin-list-item";row.innerHTML="<div><strong>"+escape(o.order_number)+" · "+escape(o.customer_name)+"</strong><p>"+escape(o.customer_phone)+" · "+escape(o.customer_email)+"</p><p>"+escape(o.shipping_address)+", "+escape(o.city)+(o.postal_code?" "+escape(o.postal_code):"")+", "+escape(o.country)+"</p><p>"+money(o.total_pkr)+" · "+escape(o.payment_method)+" · "+escape(o.payment_status)+"</p><p>Placed: "+escape(dateTime(o.created_at))+" · Status: "+escape(o.status)+"</p></div><div class='admin-item-actions'><select aria-label='Order status' data-order-status='"+o.id+"'>"+["pending","confirmed","processing","shipped","delivered","cancelled"].map(s=>"<option "+(s===o.status?"selected":"")+" value='"+s+"'>"+s+"</option>").join("")+"</select><button type='button' data-save-order='"+o.id+"'>Update</button></div>";box.appendChild(row);});
     box.querySelectorAll("[data-save-order]").forEach(b=>b.addEventListener("click",async()=>{const id=b.dataset.saveOrder, value=box.querySelector("[data-order-status='"+id+"']").value;const {error}=await db.from("orders").update({status:value}).eq("id",id);if(error)say("adminStatus",error.message);else {say("adminStatus","Order status updated.");await loadOrders();}}));
   }
   $("refreshProducts").addEventListener("click",loadProducts); $("refreshOrders").addEventListener("click",loadOrders);
