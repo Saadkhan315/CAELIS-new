@@ -1,224 +1,235 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#10100f">
-  <meta name="description" content="CAELIS — considered design, timeless essentials, and modern luxury.">
-  <title>CAELIS — Modern Luxury, Timeless by Nature</title>
+  <meta name="theme-color" content="#090909">
+  <meta name="description" content="CAELIS — Wear Confident. Wear Elegant. Discover modern luxury fashion.">
+  <title>CAELIS | Wear Confident. Wear Elegant.</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
   <script src="app.js" defer></script>
 </head>
 
 <body>
   <div class="announcement">
-    <p>CAELIS — A MORE CONSIDERED WAY TO DRESS</p>
+    AN EXPRESSION OF MODERN LUXURY
   </div>
 
   <header class="site-header">
-    <a class="wordmark" href="#home" aria-label="CAELIS home">CAELIS<span>®</span></a>
+    <a class="brand" href="#home" aria-label="CAELIS home">CAELIS<span>®</span></a>
 
-    <nav class="desktop-nav" aria-label="Main navigation">
-      <a href="#collection">Collection</a>
-      <a href="#philosophy">Our philosophy</a>
-      <a href="#craft">The details</a>
+    <button class="menu-toggle" id="menuToggle"
+      aria-label="Open navigation" aria-expanded="false">☰</button>
+
+    <nav class="navigation" id="navigation">
+      <a href="#home">Home</a>
+      <a href="#collections">Collections</a>
+      <a href="#story">Our Story</a>
+      <a href="#contact">Contact</a>
+      <a class="bag-link" href="#shopping">Shopping Bag <span id="cartCount">0</span></a>
     </nav>
-
-    <div class="header-actions">
-      <button class="icon-button search-toggle" aria-label="Search products" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
-      </button>
-      <button class="cart-trigger" type="button" aria-label="Open shopping bag">
-        Bag <span class="cart-count">0</span>
-      </button>
-      <button class="menu-toggle icon-button" type="button" aria-label="Open navigation" aria-expanded="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18M3 16h18"></path></svg>
-      </button>
-    </div>
   </header>
-
-  <div class="mobile-nav" id="mobileNav" hidden>
-    <a href="#collection">Collection</a>
-    <a href="#philosophy">Our philosophy</a>
-    <a href="#craft">The details</a>
-  </div>
 
   <main>
     <section class="hero" id="home">
-      <div class="hero-image" role="img" aria-label="Minimal editorial fashion in a warm architectural setting"></div>
+      <div class="hero-image"></div>
       <div class="hero-shade"></div>
 
       <div class="hero-content">
-        <p class="eyebrow">THE ART OF LESS</p>
-        <h1>Wear what<br><em>matters.</em></h1>
-        <p class="hero-copy">Modern essentials. Considered details.<br>Made for a life beyond trends.</p>
-        <a class="button button-light" href="#collection">Explore CAELIS <span>↗</span></a>
+        <p class="eyebrow reveal">THE ART OF EVERYDAY ELEGANCE</p>
+
+        <h1 class="welcome reveal">WELCOME TO <span>CAELIS</span></h1>
+
+        <div class="reflection-word">
+          <span class="reflection-text">CAELIS</span>
+        </div>
+
+        <p class="hero-tagline reveal">
+          Wear Confident. Wear Elegant.<br>
+          <span>Wear CAELIS.</span>
+        </p>
+
+        <p class="hero-description reveal">
+          A considered expression of modern style.
+          Made for those who carry confidence in every detail.
+        </p>
+
+        <a class="gold-button reveal" href="#collections">
+          DISCOVER CAELIS <span>↗</span>
+        </a>
+
+        <p class="hero-note">TIMELESS STYLE. DISTINCTIVE PRESENCE.</p>
       </div>
 
-      <div class="hero-bottom">
-        <span>DESIGNED WITH INTENTION</span>
-        <span>01 — TIMELESS BY NATURE</span>
+      <div class="hero-side-note">THE SIGNATURE EXPERIENCE — 001</div>
+      <a class="scroll-cue" href="#collections">
+        <span>SCROLL TO DISCOVER</span>
+        <span class="scroll-line"></span>
+      </a>
+    </section>
+
+    <section class="intro section-padding" id="story">
+      <div class="section-label"><span>01</span> THE CAELIS PHILOSOPHY</div>
+
+      <div class="intro-grid">
+        <h2>Less, but<br><em>exceptional.</em></h2>
+
+        <div class="intro-copy">
+          <span class="gold-mark">C.</span>
+          <p>
+            CAELIS is built around a simple belief: true style does not need
+            to be loud. It lives in the details, the feeling of the fabric,
+            the confidence of a silhouette, and the way you present yourself.
+          </p>
+          <p class="muted-copy">
+            Thoughtful design. Understated luxury. Your own expression.
+          </p>
+        </div>
       </div>
     </section>
 
-    <section class="intro section-shell" id="philosophy">
-      <p class="eyebrow">THE CAELIS POINT OF VIEW</p>
-      <h2>Less, but <em>better.</em></h2>
-      <p class="intro-copy">
-        We believe personal style is not about having more.
-        It is about choosing well — thoughtful silhouettes,
-        considered details, and pieces that feel like your own.
-      </p>
-      <div class="gold-rule"></div>
+    <section class="editorial" aria-label="CAELIS editorial">
+      <div class="editorial-image editorial-image-one">
+        <span>FORM MEETS FEELING</span>
+      </div>
+      <div class="editorial-image editorial-image-two">
+        <span>DETAILS DEFINE YOU</span>
+      </div>
+      <div class="editorial-image editorial-image-three">
+        <span>CONFIDENCE, REFINED</span>
+      </div>
     </section>
 
-    <section class="collection section-shell" id="collection">
+    <section class="collections section-padding" id="collections">
+      <div class="section-label"><span>02</span> EXPLORE THE WORLD OF CAELIS</div>
+
       <div class="section-heading">
         <div>
-          <p class="eyebrow">THE EDIT</p>
-          <h2>Your next <em>essential.</em></h2>
+          <p class="eyebrow">YOUR STYLE. YOUR STATEMENT.</p>
+          <h2>The <em>collections</em></h2>
         </div>
-        <p class="muted-heading">A collection that speaks quietly.</p>
+        <p class="muted-copy collection-description">
+          Discover the pieces that define your personal style.
+        </p>
       </div>
 
-      <div class="catalogue-tools">
-        <div class="category-filters" aria-label="Filter products">
-          <button class="filter-button active" data-category="all" type="button">All pieces</button>
-          <button class="filter-button" data-category="shirts" type="button">Shirts</button>
-          <button class="filter-button" data-category="t-shirts" type="button">T-shirts</button>
-          <button class="filter-button" data-category="essentials" type="button">Essentials</button>
+      <div class="collection-grid">
+        <a class="collection-card collection-shirts" href="#shopping">
+          <div class="collection-overlay"></div>
+          <div class="collection-info">
+            <span>01 / REFINED ESSENTIALS</span>
+            <h3>Shirts</h3>
+            <span class="collection-link">EXPLORE <b>↗</b></span>
+          </div>
+        </a>
+
+        <a class="collection-card collection-tees" href="#shopping">
+          <div class="collection-overlay"></div>
+          <div class="collection-info">
+            <span>02 / EVERYDAY LUXURY</span>
+            <h3>T-Shirts</h3>
+            <span class="collection-link">EXPLORE <b>↗</b></span>
+          </div>
+        </a>
+
+        <a class="collection-card collection-formal" href="#shopping">
+          <div class="collection-overlay"></div>
+          <div class="collection-info">
+            <span>03 / EFFORTLESS PRESENCE</span>
+            <h3>Formal Wear</h3>
+            <span class="collection-link">EXPLORE <b>↗</b></span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="statement">
+      <div class="statement-inner">
+        <span class="gold-mark">CAELIS</span>
+        <h2>Confidence is quiet.<br><em>Style speaks.</em></h2>
+        <p>Wear who you are. Become who you envision.</p>
+        <a class="text-link" href="#shopping">EXPLORE YOUR STYLE <span>→</span></a>
+      </div>
+    </section>
+
+    <section class="shopping section-padding" id="shopping">
+      <div class="section-label"><span>03</span> THE CAELIS STORE</div>
+
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">YOUR NEXT FAVOURITE PIECE</p>
+          <h2>Shop <em>CAELIS</em></h2>
         </div>
-
-        <label class="sort-control">
-          <span>Sort</span>
-          <select id="sortProducts" aria-label="Sort products">
-            <option value="featured">Featured</option>
-            <option value="price-low">Price: low to high</option>
-            <option value="price-high">Price: high to low</option>
-            <option value="name">Name</option>
-          </select>
-        </label>
+        <span class="muted-copy">Our collection, your way.</span>
       </div>
 
-      <form class="search-panel" id="searchForm" role="search" hidden>
-        <label class="visually-hidden" for="productSearch">Search products</label>
-        <input id="productSearch" type="search" placeholder="Search the collection..." autocomplete="off">
-        <button class="text-button" type="submit">Search ↗</button>
-        <button class="text-button" id="closeSearch" type="button">Close</button>
-      </form>
-
-      <div class="product-grid" id="productGrid" aria-live="polite"></div>
-
-      <div class="empty-catalogue" id="emptyCatalogue">
-        <span class="empty-symbol">C.</span>
-        <p class="eyebrow">THE NEXT CHAPTER IS YOURS</p>
-        <h3>Your collection starts here.</h3>
-        <p>Our catalogue is being prepared. Your own CAELIS products will appear here when you add them.</p>
+      <div class="store-message" id="storeMessage">
+        <span class="store-symbol">C.</span>
+        <h3>Your collection begins here.</h3>
+        <p>
+          Your own products will appear here when you add them.
+          No demo products. No invented prices.
+        </p>
+        <p class="store-admin-note">
+          Product management and live inventory will connect to your database
+          in the backend setup.
+        </p>
       </div>
+
+      <div class="product-grid" id="productGrid"></div>
     </section>
 
-    <section class="campaign" id="craft">
-      <div class="campaign-image" role="img" aria-label="Neutral-toned fashion and architectural textures"></div>
-      <div class="campaign-content">
-        <p class="eyebrow">A CLOSER LOOK</p>
-        <h2>Details make<br><em>the difference.</em></h2>
-        <p>From the feel of a fabric to the way a piece sits, every detail should have a reason to be there.</p>
-        <a class="underlined-link" href="#collection">Discover the CAELIS approach <span>↗</span></a>
-      </div>
-    </section>
+    <section class="newsletter section-padding">
+      <div class="newsletter-content">
+        <p class="eyebrow">A MORE EXCLUSIVE EXPERIENCE</p>
+        <h2>Stay in the <em>know.</em></h2>
+        <p>Be the first to hear about new collections and CAELIS updates.</p>
 
-    <section class="values section-shell">
-      <div class="value-item">
-        <span class="value-number">01</span>
-        <h3>Considered design</h3>
-        <p>Clean lines and purposeful details, without unnecessary noise.</p>
+        <form class="newsletter-form" id="newsletterForm">
+          <label class="visually-hidden" for="newsletterEmail">Email address</label>
+          <input id="newsletterEmail" type="email" placeholder="Your email address" required>
+          <button type="submit" aria-label="Subscribe">JOIN US ↗</button>
+        </form>
+        <p id="newsletterMessage" class="form-message" aria-live="polite"></p>
       </div>
-      <div class="value-item">
-        <span class="value-number">02</span>
-        <h3>Everyday refinement</h3>
-        <p>Modern pieces designed to feel natural in your everyday life.</p>
-      </div>
-      <div class="value-item">
-        <span class="value-number">03</span>
-        <h3>Your own expression</h3>
-        <p>Personal style, built around what you choose and how you wear it.</p>
-      </div>
-    </section>
-
-    <section class="newsletter">
-      <p class="eyebrow">LETTERS FROM CAELIS</p>
-      <h2>Stay in the <em>know.</em></h2>
-      <p>News, collection releases, and considered inspiration.</p>
-      <form id="newsletterForm" class="newsletter-form">
-        <label class="visually-hidden" for="newsletterEmail">Your email address</label>
-        <input id="newsletterEmail" type="email" placeholder="Your email address" required>
-        <button type="submit" aria-label="Join the mailing list">Join ↗</button>
-      </form>
-      <p class="form-message" id="newsletterMessage" aria-live="polite"></p>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-main">
-      <div class="footer-brand">
-        <a class="wordmark footer-wordmark" href="#home">CAELIS<span>®</span></a>
-        <p>Modern luxury.<br>Timeless by nature.</p>
+  <footer class="site-footer" id="contact">
+    <div class="footer-top">
+      <div>
+        <a class="brand footer-brand" href="#home">CAELIS<span>®</span></a>
+        <p class="footer-tagline">Wear Confident. Wear Elegant.</p>
       </div>
 
       <div class="footer-column">
-        <p class="footer-title">EXPLORE</p>
-        <a href="#collection">Collection</a>
-        <a href="#philosophy">Our philosophy</a>
-        <a href="#craft">The details</a>
+        <h4>EXPLORE</h4>
+        <a href="#home">Home</a>
+        <a href="#collections">Collections</a>
+        <a href="#story">Our Story</a>
       </div>
 
       <div class="footer-column">
-        <p class="footer-title">INFORMATION</p>
-        <a href="mailto:hello@caelis.com">Contact</a>
-        <a href="#shipping-info">Shipping information</a>
-        <a href="#returns-info">Returns information</a>
-      </div>
-
-      <div class="footer-column">
-        <p class="footer-title">FOLLOW THE JOURNEY</p>
-        <a href="#instagram" aria-label="Instagram link to be configured">Instagram ↗</a>
-        <a href="#facebook" aria-label="Facebook link to be configured">Facebook ↗</a>
+        <h4>ASSISTANCE</h4>
+        <a href="mailto:YOUR-EMAIL@example.com">Contact Us</a>
+        <a href="#contact">Shipping & Returns</a>
+        <a href="#contact">Privacy & Terms</a>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <span>© <span id="currentYear"></span> CAELIS. All rights reserved.</span>
+      <span>© <span id="currentYear"></span> CAELIS. ALL RIGHTS RESERVED.</span>
       <span>DESIGNED WITH INTENTION.</span>
+      <a href="#home">BACK TO TOP ↑</a>
     </div>
   </footer>
 
-  <div class="overlay" id="overlay" hidden></div>
-
-  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping bag" aria-hidden="true">
-    <div class="drawer-heading">
-      <div>
-        <p class="eyebrow">YOUR SELECTION</p>
-        <h2>Your bag <span class="cart-count">0</span></h2>
-      </div>
-      <button class="close-drawer icon-button" type="button" aria-label="Close shopping bag">×</button>
-    </div>
-    <div class="cart-items" id="cartItems"></div>
-    <div class="cart-empty" id="cartEmpty">
-      <p>Your bag is waiting for something considered.</p>
-      <button class="button button-dark" id="continueShopping" type="button">Explore collection</button>
-    </div>
-    <div class="cart-summary" id="cartSummary" hidden>
-      <div class="subtotal-row"><span>Subtotal</span><strong id="cartSubtotal">Rs 0</strong></div>
-      <p>Shipping and payment options are confirmed at checkout.</p>
-      <button class="button button-dark full-width" id="checkoutButton" type="button">Continue to checkout</button>
-      <p class="checkout-note">Checkout becomes available after secure order processing is configured.</p>
-    </div>
-  </aside>
-
-  <div class="notice" id="notice" role="status" aria-live="polite"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
