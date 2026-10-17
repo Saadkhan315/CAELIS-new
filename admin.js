@@ -3,7 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const $ = id => document.getElementById(id);
   const configured = window.supabase && window.CAELIS_SUPABASE_URL && window.CAELIS_SUPABASE_ANON_KEY && !String(window.CAELIS_SUPABASE_URL).includes("PASTE_") && !String(window.CAELIS_SUPABASE_ANON_KEY).includes("PASTE_");
   const db = configured ? window.supabase.createClient(window.CAELIS_SUPABASE_URL, window.CAELIS_SUPABASE_ANON_KEY) : null;
-  const say = (id, message) => { $(id).textContent = message; };\n  const dateTime = v => v ? new Intl.DateTimeFormat("en-PK",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v)) : "Date unavailable";
+  const say = (id, message) => { $(id).textContent = message; };
+  const dateTime = v => v ? new Intl.DateTimeFormat("en-PK",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v)) : "Date unavailable";
   const money = n => new Intl.NumberFormat("en-PK",{style:"currency",currency:"PKR",maximumFractionDigits:0}).format(Number(n)||0);
   const escape = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   async function start() {
