@@ -13,3 +13,30 @@
 .collection-tees .collection-image{background-position:center}
 .collection-formal .collection-image{background-position:center 40%}
 .collection-card:after{background:linear-gradient(0deg,rgba(4,4,4,.94) 0%,rgba(4,4,4,.18) 75%)}
+
+
+/* CAELIS editorial front-end refinement: tactile imagery, quiet luxury, responsive editorial grid. */
+.material-edit{background:#e9e3d7;color:#171612;padding-top:clamp(68px,8vw,112px);padding-bottom:clamp(68px,8vw,112px)}
+.material-edit .section-label{color:#6e685d}
+.material-edit .section-label>span:first-child{color:#967a43}
+.material-edit .label-rule{background:#967a43}
+.material-edit-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:35px;margin:0 auto 35px;max-width:1320px}
+.material-edit-heading h2{margin-top:22px;font:400 clamp(48px,6.2vw,82px)/1.04 var(--serif);letter-spacing:-.8px}
+.material-edit-heading h2 em{color:#967a43;font-weight:400}
+.material-edit-heading>p{max-width:330px;margin-bottom:6px;color:#625d53;font-size:11px;line-height:2}
+.material-edit-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:14px;max-width:1320px;margin:0 auto}
+.material-tile{position:relative;isolation:isolate;min-height:390px;display:flex;align-items:flex-end;overflow:hidden;background:#c9c1b3;color:#fff}
+.material-tile-large{min-height:510px}
+.material-tile img{position:absolute;z-index:-2;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(.45) contrast(1.02);transition:transform .9s cubic-bezier(.2,.7,.2,1),filter .6s}
+.material-tile:after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(0deg,rgba(12,11,9,.84),rgba(12,11,9,.08) 68%)}
+.material-tile:hover img{transform:scale(1.045);filter:saturate(.72) contrast(1.04)}
+.material-tile-index{position:absolute;top:20px;left:21px;color:#f0e8d7;font-size:8px;letter-spacing:1.65px}
+.material-tile-title{padding:27px 24px 30px;font:400 clamp(27px,3vw,41px)/1.08 var(--serif);letter-spacing:-.3px}
+.material-tile-arrow{position:absolute;right:20px;bottom:27px;display:grid;place-items:center;width:35px;height:35px;border:1px solid rgba(255,255,255,.6);border-radius:50%;font-size:16px;transition:background .25s,color .25s}
+.material-tile:hover .material-tile-arrow{background:#e5d2a1;color:#171612;border-color:#e5d2a1}
+.material-edit-note{max-width:1320px;margin:20px auto 0;color:#6c665b;font-size:9px;letter-spacing:.6px}
+.material-edit-note span{color:#8a6c36;letter-spacing:1.4px}
+.collections{padding-top:clamp(70px,8vw,105px)}
+@media(max-width:900px){.material-edit-grid{grid-template-columns:1fr 1fr}.material-tile-large{grid-row:span 2;min-height:100%}.material-tile{min-height:310px}.material-edit-heading{align-items:flex-start;flex-direction:column;gap:14px}}
+@media(max-width:650px){.material-edit{padding:64px 6%}.material-edit-heading h2{font-size:56px}.material-edit-grid{grid-template-columns:1fr;gap:12px}.material-tile,.material-tile-large{min-height:390px}.material-tile-title{font-size:34px}.material-edit-note{line-height:1.9}}
+@media(prefers-reduced-motion:reduce){.material-tile img{transition:none}}
