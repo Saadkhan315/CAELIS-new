@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   nav.querySelectorAll("a").forEach(a => a.addEventListener("click", () => { nav.classList.remove("open"); menu.setAttribute("aria-expanded","false"); menu.textContent="☰"; }));
   byId("accountOpen").addEventListener("click", async () => { showModal("accountModal"); await refreshAuth(); });
   byId("cartOpen").addEventListener("click", () => { renderCart(); showModal("cartModal"); });
-  byId("authSwitch").addEventListener("click", () => { state.signup = !state.signup; byId("authTitle").textContent = state.signup ? "Create your account." : "Welcome back."; byId("authSubmit").textContent = state.signup ? "Create account" : "Sign in"; byId("authSwitch").textContent = state.signup ? "Already registered? Sign in" : "Need an account? Create one"; byId("authPassword").autocomplete = state.signup ? "new-password" : "current-password"; });
+  byId("authSwitch").addEventListener("click", () => { state.signup = !state.signup; byId("accountTitle").textContent = state.signup ? "Create your account." : "Welcome back."; byId("authSubmit").textContent = state.signup ? "Create account" : "Sign in"; byId("authSwitch").textContent = state.signup ? "Already registered? Sign in" : "Need an account? Create one"; byId("authPassword").autocomplete = state.signup ? "new-password" : "current-password"; });
   async function refreshAuth() {
     if (!db) { byId("accountState").textContent = "Supabase is not configured yet. Add your Project URL and public key to supabase-config.js."; return; }
     const { data, error } = await db.auth.getUser();
