@@ -54,7 +54,7 @@ begin
     update public.orders set stock_restored=true where id=new.id;
   end if;
   return new;
-end; $;
+end; $$;
 drop trigger if exists restore_stock_after_order_cancel on public.orders;
 create trigger restore_stock_after_order_cancel
 after update of status on public.orders
