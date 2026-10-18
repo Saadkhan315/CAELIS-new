@@ -341,3 +341,37 @@ html,body{background:#f8f5ee!important;color:#28241d!important}
 .product-card h3,.product-card .product-price{color:#28241d!important}
 .product-card .product-description,.product-card .product-category{color:#746c5f!important}
 .product-card select,.product-card input{background:#fff!important;color:#28241d!important;border-color:#d8cbb4!important}
+
+
+/* FINAL OVERRIDE — CAELIS black and gold is the primary brand theme */
+:root{--black:#080808;--panel:#11100e;--panel2:#191611;--gold:#c7a45e;--gold2:#e0c783;--ivory:#f3eee3;--muted:#b2a58d;--line:rgba(199,164,94,.26)}
+html,body{background:#080808!important;color:#f3eee3!important}
+.announcement,.marquee{background:#11100e!important;color:#e8dcc3!important}
+.site-header{background:rgba(5,5,5,.97)!important;border-bottom:1px solid rgba(199,164,94,.25)!important}
+.site-header a,.navigation a,.nav-action,.brand{color:#f3eee3!important}
+.hero,.intro,.material-edit,.collections,.shopping,.newsletter,.shop-section,.products-section{background:#080808!important;color:#f3eee3!important}
+.hero-image{background-image:radial-gradient(ellipse at 76% 42%,rgba(199,164,94,.14),transparent 28%),linear-gradient(120deg,#080808 0%,#17130c 56%,#090909 100%)!important;filter:none!important}
+.hero-shade{background:linear-gradient(90deg,rgba(8,8,8,.96),rgba(8,8,8,.78) 48%,rgba(8,8,8,.30))!important}
+.hero h1,.hero-content,.hero-description,.hero-quote,.hero-footnote,.hero-index,.scroll-cue,.section-heading h2,.intro h2,.statement h2,.newsletter h2{color:#f3eee3!important}
+.hero h1 em,.intro h2 em,.section-heading h2 em,.newsletter h2 em,.statement h2 em,.modal-card h2 em{color:#c7a45e!important}
+.eyebrow,.hero .eyebrow,.section-label{color:#c7a45e!important}
+.gold-button,.button-gold,.hero .button-primary{background:#c7a45e!important;border-color:#c7a45e!important;color:#080808!important}
+.muted-copy,.intro-copy p,.material-edit-heading>p,.material-edit-note,.section-description{color:#b2a58d!important}
+.material-edit{background:#100e0a!important;color:#f3eee3!important}
+.material-tile,.collection-card{background:#171512!important;color:#f3eee3!important;border-color:rgba(199,164,94,.25)!important}
+.statement{background:#100e0a!important;color:#f3eee3!important}
+.statement-image{background:radial-gradient(ellipse at 75% 50%,rgba(199,164,94,.12),transparent 30%),linear-gradient(120deg,#080808,#17130c)!important;filter:none!important}
+.statement:after{background:linear-gradient(90deg,rgba(8,8,8,.96),rgba(8,8,8,.72) 65%,rgba(8,8,8,.4))!important}
+.statement h2,.statement .eyebrow{color:#f3eee3!important}
+.store-tools input,.store-tools select,.newsletter-form input,.product-card select,.product-card input{background:#111!important;color:#f3eee3!important;border-color:rgba(199,164,94,.35)!important}
+.service-strip{background:#12100c!important;color:#e8dcc3!important;border-top:1px solid rgba(199,164,94,.2)!important;border-bottom:1px solid rgba(199,164,94,.2)!important}
+.site-footer{background:#050505!important;color:#e8dcc3!important;border-top:1px solid rgba(199,164,94,.35)!important}
+.site-footer a,.footer-action,.footer-tagline,.footer-small,.footer-column h4,.footer-bottom{color:#cbb98f!important}
+.brand-intro{background:radial-gradient(ellipse at 50% 47%,rgba(199,164,94,.16),transparent 35%),#050505!important}
+.brand-intro:before{border-color:rgba(199,164,94,.25)!important}
+.brand-intro h1{color:#f3eee3!important}
+.brand-intro .intro-kicker,.intro-line,.brand-intro .intro-line{color:#c7a45e!important}
+.brand-intro .intro-skip{color:#c7a45e!important;border-color:rgba(199,164,94,.45)!important}
+.product-card{background:#11100e!important;border:1px solid rgba(199,164,94,.24)!important;color:#f3eee3!important}
+.product-card h3,.product-card .product-price{color:#f3eee3!important}
+.product-card .product-description,.product-card .product-category{color:#b2a58d!important}
