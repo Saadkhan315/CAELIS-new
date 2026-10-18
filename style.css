@@ -328,3 +328,16 @@ html,body{background:#f8f5ee!important;color:#28241d!important}
 .brand-intro h1{color:#28241d!important}
 .brand-intro .intro-kicker,.intro-line,.brand-intro .intro-line{color:#78613b!important}
 .brand-intro .intro-skip{color:#78613b!important;border-color:rgba(120,97,59,.35)!important}
+
+
+/* Light luxury consistency: keep welcome, cards, and service panels aligned */
+.intro-orbit{border-color:rgba(151,115,51,.25)}
+.brand-intro .intro-orbit:before{border-color:rgba(151,115,51,.13)}
+.brand-intro .intro-orbit:after{border-color:rgba(151,115,51,.1)}
+.collection-info{background:linear-gradient(0deg,rgba(30,25,18,.88),rgba(30,25,18,.03))!important}
+.collection-card:after{border-color:rgba(255,248,232,.28)!important}
+.material-tile:after{background:linear-gradient(0deg,rgba(30,25,18,.76),rgba(30,25,18,.02) 75%)!important}
+.product-card{background:#fffdf8!important;border:1px solid #e1d5bf!important;color:#28241d!important}
+.product-card h3,.product-card .product-price{color:#28241d!important}
+.product-card .product-description,.product-card .product-category{color:#746c5f!important}
+.product-card select,.product-card input{background:#fff!important;color:#28241d!important;border-color:#d8cbb4!important}
