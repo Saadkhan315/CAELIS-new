@@ -228,3 +228,37 @@
 /* User-requested photo removal: no people/model image in the hero */
 .hero-image{background-image:radial-gradient(ellipse at 76% 42%,rgba(190,151,80,.13),transparent 26%),linear-gradient(120deg,#080808 0%,#11100d 52%,#050505 100%)!important;filter:none!important}
 .hero-shade{background:linear-gradient(90deg,rgba(4,4,4,.18),rgba(4,4,4,.08)),linear-gradient(0deg,rgba(4,4,4,.45),transparent 45%)!important}
+
+
+/* CAELIS editorial light-luxury palette: ivory, warm white, champagne gold */
+:root{--bg:#f7f4ed;--surface:#fffdf8;--surface-2:#eee8dc;--text:#24211b;--muted:#746c5f;--gold:#b18a45;--gold2:#987333;--line:rgba(112,88,48,.24)}
+body{background:#f7f4ed;color:#24211b}
+.announcement{background:#e7dcc5;color:#4c3c20}
+.site-header{background:rgba(250,248,242,.96);border-bottom:1px solid rgba(130,100,55,.2)}
+.navigation a,.nav-action,.brand{color:#26231d}
+.hero{background:#f5f0e6;color:#252119}
+.hero-image{background:radial-gradient(ellipse at 74% 43%,rgba(189,151,82,.2),transparent 28%),linear-gradient(120deg,#f8f5ee 0%,#e9dfcc 58%,#f4efe5 100%)!important;filter:none!important}
+.hero-shade{background:linear-gradient(90deg,rgba(249,246,239,.94) 0%,rgba(249,246,239,.72) 48%,rgba(249,246,239,.18) 100%)!important}
+.hero h1,.hero-content,.hero-description,.hero-quote,.hero-footnote,.hero-index,.scroll-cue{color:#29251e}
+.hero h1 em,.intro h2 em,.section-heading h2 em,.newsletter h2 em,.statement h2 em,.modal-card h2 em{color:#a47d36}
+.eyebrow,.hero .eyebrow,.section-label,.material-edit-note span{color:#927039}
+.gold-button,.button-gold{background:#b18a45;border-color:#b18a45;color:#fffdf8}
+.marquee{background:#e7dcc5;color:#54452d}
+.intro,.material-edit,.collections,.shopping,.newsletter{background:#f7f4ed;color:#29251e}
+.muted-copy,.intro-copy p,.material-edit-heading>p,.material-edit-note{color:#746c5f}
+.material-tile{background:#e7dfd1;color:#fff}
+.collection-card{background:#e7dfd1;color:#fff}
+.statement{background:#ece5d8}
+.statement-image{background:linear-gradient(110deg,#e7dece,#f8f5ee 60%,#d7c7a8)!important;filter:none!important}
+.statement:after{background:linear-gradient(90deg,rgba(250,247,240,.94),rgba(250,247,240,.75) 65%,rgba(250,247,240,.45))!important}
+.statement h2,.statement .eyebrow{color:#29251e}
+.store-tools input,.store-tools select,.newsletter-form input{background:#fffdf8;color:#29251e;border-color:#d8cbb4}
+.service-strip{background:#ece5d8;color:#29251e}
+.site-footer{background:#e7dfd1;color:#29251e;border-top:1px solid #d3c4a8}
+.site-footer a,.footer-action,.footer-tagline,.footer-small,.footer-column h4,.footer-bottom{color:#514633}
+.brand-intro{background:radial-gradient(ellipse at 50% 47%,rgba(177,138,69,.14),transparent 35%),#f7f4ed}
+.brand-intro:before{border-color:rgba(151,115,51,.22)}
+.brand-intro h1{color:#29251e}
+.brand-intro .intro-kicker,.intro-line,.brand-intro .intro-line{color:#78613b}
+.brand-intro .intro-skip{color:#78613b;border-color:rgba(120,97,59,.35)}
+/* Keep the hero free of the unwanted skincare/fruit model photo */
