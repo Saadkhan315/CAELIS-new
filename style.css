@@ -296,3 +296,35 @@ body{background-color:#080808!important}
 .brand-intro .intro-skip{color:#c7a45e!important;border-color:rgba(199,164,94,.45)!important}
 button,.button,.product-card,.collection-card,.modal-card{border-color:rgba(199,164,94,.22)}
 /* Replace the unwanted skincare/fruit image with a dark luxury textile visual */
+
+
+/* CAELIS requested direction: light ivory luxury, champagne gold, no people imagery */
+:root{--black:#f8f5ee;--panel:#fffdf8;--panel2:#eee7da;--gold:#b18a45;--gold2:#987333;--ivory:#28241d;--muted:#746c5f;--line:rgba(112,88,48,.24)}
+html,body{background:#f8f5ee!important;color:#28241d!important}
+.announcement,.marquee{background:#e9dfcc!important;color:#51432d!important}
+.site-header{background:rgba(250,248,242,.97)!important;border-bottom:1px solid rgba(130,100,55,.22)!important}
+.site-header a,.navigation a,.nav-action,.brand{color:#28241d!important}
+.hero{background:#f3ecdf!important;color:#28241d!important}
+.hero-image{background-image:radial-gradient(ellipse at 76% 42%,rgba(177,138,69,.18),transparent 28%),linear-gradient(120deg,#fbf8f1 0%,#e8dcc5 56%,#f7f2e8 100%)!important;filter:none!important}
+.hero-shade{background:linear-gradient(90deg,rgba(249,246,239,.94) 0%,rgba(249,246,239,.78) 48%,rgba(249,246,239,.28) 100%)!important}
+.hero h1,.hero-content,.hero-description,.hero-quote,.hero-footnote,.hero-index,.scroll-cue,.section-heading h2,.intro h2,.statement h2,.newsletter h2{color:#28241d!important}
+.hero h1 em,.intro h2 em,.section-heading h2 em,.newsletter h2 em,.statement h2 em,.modal-card h2 em{color:#987333!important}
+.eyebrow,.hero .eyebrow,.section-label{color:#987333!important}
+.gold-button,.button-gold{background:#b18a45!important;border-color:#b18a45!important;color:#fffdf8!important}
+.intro,.material-edit,.collections,.shopping,.newsletter{background:#f8f5ee!important;color:#28241d!important}
+.muted-copy,.intro-copy p,.material-edit-heading>p,.material-edit-note,.section-description{color:#746c5f!important}
+.material-edit{background:#eee7da!important;color:#28241d!important}
+.material-tile,.collection-card{background:#e8dfd0!important;color:#fff!important;border-color:rgba(177,138,69,.25)!important}
+.statement{background:#eee7da!important;color:#28241d!important}
+.statement-image{background:radial-gradient(ellipse at 75% 50%,rgba(177,138,69,.17),transparent 30%),linear-gradient(120deg,#f8f4eb,#e7dcc8)!important;filter:none!important}
+.statement:after{background:linear-gradient(90deg,rgba(248,245,238,.92),rgba(248,245,238,.68) 65%,rgba(248,245,238,.35))!important}
+.statement h2,.statement .eyebrow{color:#28241d!important}
+.store-tools input,.store-tools select,.newsletter-form input{background:#fffdf8!important;color:#28241d!important;border-color:#d8cbb4!important}
+.service-strip{background:#eee7da!important;color:#28241d!important;border-color:#d7c8ae!important}
+.site-footer{background:#e8dfd0!important;color:#28241d!important;border-top:1px solid #d3c4a8!important}
+.site-footer a,.footer-action,.footer-tagline,.footer-small,.footer-column h4,.footer-bottom{color:#514633!important}
+.brand-intro{background:radial-gradient(ellipse at 50% 47%,rgba(177,138,69,.16),transparent 35%),#f8f5ee!important}
+.brand-intro:before{border-color:rgba(151,115,51,.25)!important}
+.brand-intro h1{color:#28241d!important}
+.brand-intro .intro-kicker,.intro-line,.brand-intro .intro-line{color:#78613b!important}
+.brand-intro .intro-skip{color:#78613b!important;border-color:rgba(120,97,59,.35)!important}
