@@ -262,3 +262,37 @@ body{background:#f7f4ed;color:#24211b}
 .brand-intro .intro-kicker,.intro-line,.brand-intro .intro-line{color:#78613b}
 .brand-intro .intro-skip{color:#78613b;border-color:rgba(120,97,59,.35)}
 /* Keep the hero free of the unwanted skincare/fruit model photo */
+
+
+/* CAELIS FINAL BRAND DIRECTION — BLACK + CHAMPAGNE GOLD ONLY */
+:root{--bg:#080808;--surface:#101010;--surface-2:#171512;--text:#f3eee3;--muted:#b2a58d;--gold:#c7a45e;--gold2:#e0c27e;--line:rgba(199,164,94,.28)}
+html,body{background:#080808!important;color:#f3eee3!important}
+body{background-color:#080808!important}
+.announcement,.marquee{background:#c7a45e!important;color:#090909!important}
+.site-header{background:rgba(8,8,8,.96)!important;border-bottom:1px solid rgba(199,164,94,.28)!important}
+.site-header a,.navigation a,.nav-action,.brand{color:#f3eee3!important}
+.hero{background:#080808!important;color:#f3eee3!important}
+.hero-image{background:radial-gradient(ellipse at 75% 42%,rgba(199,164,94,.16),transparent 27%),linear-gradient(120deg,#050505 0%,#11100d 55%,#070707 100%)!important;filter:none!important}
+.hero-shade{background:linear-gradient(90deg,rgba(4,4,4,.22),rgba(4,4,4,.08)),linear-gradient(0deg,rgba(4,4,4,.45),transparent 45%)!important}
+.hero h1,.hero-content,.hero-description,.hero-quote,.hero-footnote,.hero-index,.scroll-cue,.section-heading h2,.intro h2,.statement h2,.newsletter h2{color:#f3eee3!important}
+.hero h1 em,.intro h2 em,.section-heading h2 em,.newsletter h2 em,.statement h2 em,.modal-card h2 em{color:#c7a45e!important}
+.eyebrow,.hero .eyebrow,.section-label{color:#c7a45e!important}
+.gold-button,.button-gold,.hero .button-primary{background:#c7a45e!important;border-color:#c7a45e!important;color:#080808!important}
+.intro,.material-edit,.collections,.shopping,.newsletter,.shop-section,.products-section{background:#080808!important;color:#f3eee3!important}
+.muted-copy,.intro-copy p,.material-edit-heading>p,.material-edit-note,.section-description{color:#b2a58d!important}
+.material-tile,.collection-card{background:#171512!important;color:#f3eee3!important;border-color:rgba(199,164,94,.25)!important}
+.statement{background:#100e0a!important;color:#f3eee3!important}
+.statement-image{background:radial-gradient(ellipse at 75% 50%,rgba(199,164,94,.12),transparent 30%),linear-gradient(120deg,#080808,#17130c)!important;filter:none!important}
+.statement:after{background:linear-gradient(90deg,rgba(8,8,8,.96),rgba(8,8,8,.72) 65%,rgba(8,8,8,.4))!important}
+.statement h2,.statement .eyebrow{color:#f3eee3!important}
+.store-tools input,.store-tools select,.newsletter-form input{background:#111!important;color:#f3eee3!important;border-color:rgba(199,164,94,.35)!important}
+.service-strip{background:#12100c!important;color:#e8dcc3!important;border-top:1px solid rgba(199,164,94,.2)!important;border-bottom:1px solid rgba(199,164,94,.2)!important}
+.site-footer{background:#050505!important;color:#e8dcc3!important;border-top:1px solid rgba(199,164,94,.35)!important}
+.site-footer a,.footer-action,.footer-tagline,.footer-small,.footer-column h4,.footer-bottom{color:#cbb98f!important}
+.brand-intro{background:radial-gradient(ellipse at 50% 47%,rgba(199,164,94,.16),transparent 35%),#050505!important}
+.brand-intro:before{border-color:rgba(199,164,94,.25)!important}
+.brand-intro h1{color:#f3eee3!important}
+.brand-intro .intro-kicker,.intro-line,.brand-intro .intro-line{color:#c7a45e!important}
+.brand-intro .intro-skip{color:#c7a45e!important;border-color:rgba(199,164,94,.45)!important}
+button,.button,.product-card,.collection-card,.modal-card{border-color:rgba(199,164,94,.22)}
+/* Replace the unwanted skincare/fruit image with a dark luxury textile visual */
