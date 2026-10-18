@@ -20,11 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
   $("signOutButton").addEventListener("click", async () => { if(db) await db.auth.signOut(); $("adminWorkspace").hidden=true; $("adminLoginPanel").hidden=false; say("adminStatus","Signed out."); });
   $("productForm").addEventListener("submit", async e => {
     e.preventDefault(); if(!db)return;
-    const name=$("pName").value.trim(), category=$("pCategory").value.trim().toLowerCase().replace(/\s+/g,"-"), description=$("pDescription").value.trim(), image=$("pImage").value.trim(), price=Number($("vPrice").value), size=$("vSize").value.trim(), color=$("vColor").value.trim(), stock=Number($("vStock").value), sku=$("vSku").value.trim() || ("CA-"+crypto.randomUUID().slice(0,8).toUpperCase());
-    if(!name || !size || !color || !Number.isFinite(price) || price<1 || !Number.isInteger(stock) || stock<0){say("productMessage","Check the product name, price, size, colour and stock.");return;}
+    const name=$("pName").value.trim(), category=$("pCategory").value.trim().toLowerCase().replace(/\s+/g,"-"), description=$("pDescription").value.trim(), image=$("pImage").value.trim(), price=Number($("vPrice").value), saleRaw=$("pSalePrice").value.trim(), salePrice=saleRaw===""?null:Number(saleRaw), size=$("vSize").value.trim(), color=$("vColor").value.trim(), stock=Number($("vStock").value), sku=$("vSku").value.trim() || ("CA-"+crypto.randomUUID().slice(0,8).toUpperCase());
+    if(!name || !size || !color || !Number.isFinite(price) || price<1 || (salePrice!==null && (!Number.isFinite(salePrice)||salePrice<0||salePrice>=price)) || !Number.isInteger(stock) || stock<0){say("productMessage","Check name, price, sale price (must be lower than regular price), size, colour and stock.");return;}
     $("saveProductButton").disabled=true; say("productMessage","Saving product…");
     const slug=name.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+crypto.randomUUID().slice(0,6);
-    const {data:product,error:pe}=await db.from("products").insert({slug,name,description,category,price_pkr:price,image_url:image||null,active:$("pPublished").value==="true"}).select().single();
+    const {data:product,error:pe}=await db.from("products").insert({slug,name,description,category,price_pkr:price,sale_price_pkr:salePrice,image_url:image||null,active:$("pPublished").value==="true"}).select().single();
     if(pe){say("productMessage","Product not saved: "+pe.message);$("saveProductButton").disabled=false;return;}
     const {error:ve}=await db.from("product_variants").insert({product_id:product.id,size,color,sku,stock});
     $("saveProductButton").disabled=false;
