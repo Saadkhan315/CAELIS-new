@@ -44,7 +44,7 @@ create index if not exists order_items_order_idx on public.order_items(order_id)
 -- Return stock when an administrator cancels an order; guard against double-restocking.
 alter table public.orders add column if not exists stock_restored boolean not null default false;
 create or replace function public.restore_cancelled_order_stock()
-returns trigger language plpgsql security definer set search_path=public,pg_temp as $
+returns trigger language plpgsql security definer set search_path=public,pg_temp as $$
 begin
   if new.status='cancelled' and old.status is distinct from 'cancelled' and new.stock_restored=false then
     update public.product_variants v
