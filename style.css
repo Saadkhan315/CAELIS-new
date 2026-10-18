@@ -66,3 +66,25 @@
 .collection-card:after{background:linear-gradient(0deg,rgba(9,9,8,.9),rgba(9,9,8,.01) 76%)}
 .statement-image{background-image:url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=2200&q=90");background-position:center 53%;filter:saturate(.28) contrast(1.08)}
 @media(min-width:1200px){.material-edit-grid{gap:18px}.material-tile{min-height:430px}.material-tile-large{min-height:550px}.collection-card{min-height:530px}}
+
+
+/* CAELIS homepage art direction: garment-led hero and an empty boutique atmosphere; no people. */
+.hero-image{
+  background-image:url("https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=2400&q=90");
+  background-position:center 46%;
+  background-size:cover;
+  filter:saturate(.25) contrast(1.08);
+}
+.hero-shade{
+  background:linear-gradient(90deg,rgba(7,7,6,.92) 0%,rgba(7,7,6,.70) 42%,rgba(7,7,6,.12) 100%),linear-gradient(0deg,rgba(7,7,6,.58),transparent 50%);
+}
+.statement-image{
+  background-image:url("https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2200&q=90");
+  background-position:center 52%;
+  background-size:cover;
+  filter:saturate(.25) contrast(1.06);
+}
+@media(max-width:650px){
+  .hero-image{background-position:58% center}
+  .hero-shade{background:linear-gradient(90deg,rgba(4,4,4,.88),rgba(4,4,4,.42)),linear-gradient(0deg,rgba(4,4,4,.78),transparent 62%)}
+}
