@@ -375,3 +375,13 @@ html,body{background:#080808!important;color:#f3eee3!important}
 .product-card{background:#11100e!important;border:1px solid rgba(199,164,94,.24)!important;color:#f3eee3!important}
 .product-card h3,.product-card .product-price{color:#f3eee3!important}
 .product-card .product-description,.product-card .product-category{color:#b2a58d!important}
+
+
+/* Clean storefront direction requested: shop-first, no model/editorial photos */
+.hero-image,.collection-image,.material-tile,.statement-image{background-image:none!important;background:#11100e!important}
+.hero-shade,.statement:after{background:linear-gradient(90deg,rgba(8,8,8,.98),rgba(8,8,8,.82))!important}
+.collection-card{background:#11100e!important}
+.collection-card img,.material-tile img,.statement img,.hero img,.product-image-wrap img{display:none!important}
+.product-image-wrap{min-height:150px!important;background:linear-gradient(145deg,#171512,#090909)!important;display:flex;align-items:center;justify-content:center}
+.product-image-wrap:after{content:"CAELIS";font-family:serif;letter-spacing:.28em;color:#c7a45e;font-size:1rem}
+.collection-card:before,.material-tile:before{background:none!important}
