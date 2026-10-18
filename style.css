@@ -217,3 +217,10 @@
 .brand-intro .intro-skip{min-width:180px;margin-top:12px;padding:11px 18px;border-color:rgba(255,255,255,.2);background:transparent;color:#b6afa1;font-size:9px;animation:introRise 1s .8s both}
 @keyframes introOrbit{to{transform:rotate(360deg)}}@keyframes introRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:600px){.intro-orbit{width:72vw}.brand-intro>img{width:min(300px,78vw);max-height:28vh}.brand-intro .intro-kicker{margin-top:15px}.intro-line{margin-top:14px}.brand-intro button{margin-top:24px}}
+
+/* CAELIS intro timing, typography and people-free editorial visual treatment */
+.brand-intro .intro-line{display:flex;flex-direction:column;gap:3px;color:#d8cfbd;font:clamp(16px,2.1vw,23px)/1.5 var(--serif);letter-spacing:.2px}
+.brand-intro .intro-line span:last-child{color:var(--gold2)}
+.hero-image{background-image:linear-gradient(115deg,rgba(5,5,5,.98) 0%,rgba(12,11,9,.88) 48%,rgba(5,5,5,.45) 100%),url("https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=2200&q=88")!important;background-position:center,right center!important;background-size:cover!important}
+.statement-image{background-image:linear-gradient(90deg,rgba(5,5,5,.93),rgba(5,5,5,.65)),url("https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2000&q=88")!important;background-position:center!important}
+@media(max-width:700px){.hero-image{background-position:center!important}.brand-intro .intro-line{gap:1px}}
