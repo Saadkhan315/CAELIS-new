@@ -9,13 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     document.getElementById("enterStore")?.addEventListener("click", leaveIntro);
     document.getElementById("skipIntro")?.addEventListener("click", leaveIntro);
-    window.setTimeout(leaveIntro, 6500);
+    window.setTimeout(leaveIntro, 3500);
     document.body.style.overflow = "hidden";
     const restoreScroll = () => { if (!document.getElementById("brandIntro")) document.body.style.overflow = ""; };
     intro.addEventListener("transitionend", restoreScroll, { once: true });
     document.getElementById("enterStore")?.addEventListener("click", () => window.setTimeout(() => { document.body.style.overflow = ""; }, 900));
     document.getElementById("skipIntro")?.addEventListener("click", () => window.setTimeout(() => { document.body.style.overflow = ""; }, 900));
-    window.setTimeout(() => { document.body.style.overflow = ""; }, 7400);
+    window.setTimeout(() => { document.body.style.overflow = ""; }, 4400);
   }
   const $ = id => document.getElementById(id);
   const configReady = window.supabase && window.CAELIS_SUPABASE_URL && window.CAELIS_SUPABASE_ANON_KEY &&
