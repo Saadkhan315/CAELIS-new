@@ -4,10 +4,11 @@ create extension if not exists pgcrypto;
 create table if not exists public.products (
  id uuid primary key default gen_random_uuid(), slug text unique not null, name text not null,
  description text not null default '', category text not null default 'essentials',
- price_pkr numeric(12,2) not null check(price_pkr >= 0), image_url text,
+ price_pkr numeric(12,2) not null check(price_pkr >= 0), sale_price_pkr numeric(12,2) check(sale_price_pkr is null or (sale_price_pkr >= 0 and sale_price_pkr < price_pkr)), image_url text,
  active boolean not null default false, created_at timestamptz not null default now(),
  updated_at timestamptz not null default now()
 );
+alter table public.products add column if not exists sale_price_pkr numeric(12,2);
 create table if not exists public.product_variants (
  id uuid primary key default gen_random_uuid(), product_id uuid not null references public.products(id) on delete cascade,
  size text not null, color text not null, sku text unique not null,
