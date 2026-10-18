@@ -1,5 +1,22 @@
 "use strict";
 document.addEventListener("DOMContentLoaded", () => {
+  const intro = document.getElementById("brandIntro");
+  if (intro) {
+    const leaveIntro = () => {
+      if (intro.classList.contains("is-leaving")) return;
+      intro.classList.add("is-leaving");
+      window.setTimeout(() => intro.remove(), 850);
+    };
+    document.getElementById("enterStore")?.addEventListener("click", leaveIntro);
+    document.getElementById("skipIntro")?.addEventListener("click", leaveIntro);
+    window.setTimeout(leaveIntro, 6500);
+    document.body.style.overflow = "hidden";
+    const restoreScroll = () => { if (!document.getElementById("brandIntro")) document.body.style.overflow = ""; };
+    intro.addEventListener("transitionend", restoreScroll, { once: true });
+    document.getElementById("enterStore")?.addEventListener("click", () => window.setTimeout(() => { document.body.style.overflow = ""; }, 900));
+    document.getElementById("skipIntro")?.addEventListener("click", () => window.setTimeout(() => { document.body.style.overflow = ""; }, 900));
+    window.setTimeout(() => { document.body.style.overflow = ""; }, 7400);
+  }
   const $ = id => document.getElementById(id);
   const configReady = window.supabase && window.CAELIS_SUPABASE_URL && window.CAELIS_SUPABASE_ANON_KEY &&
     !String(window.CAELIS_SUPABASE_URL).includes("PASTE_") && !String(window.CAELIS_SUPABASE_ANON_KEY).includes("PASTE_");
