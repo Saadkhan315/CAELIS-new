@@ -108,7 +108,7 @@ begin
    raise exception 'Your bag is empty or contains too many line items';
  end if;
  insert into public.orders(user_id,customer_name,customer_email,customer_phone,shipping_address,city,postal_code,country,payment_method,payment_status,status,total_pkr)
- values(v_user,trim(p_customer_name),trim(p_customer_email),trim(p_customer_phone),trim(p_shipping_address),trim(p_city),nullif(trim(coalesce(p_postal_code,'')),''),coalesce(nullif(trim(p_country,''),''),'Pakistan'),'cod','pending','pending',0)
+ values(v_user,trim(p_customer_name),trim(p_customer_email),trim(p_customer_phone),trim(p_shipping_address),trim(p_city),nullif(trim(coalesce(p_postal_code,'')),''),coalesce(nullif(trim(p_country),''),'Pakistan'),'cod','pending','pending',0)
  returning id,order_number into v_order_id,v_order_number;
  for v_item in select value from jsonb_array_elements(p_items) loop
    if jsonb_typeof(v_item) is distinct from 'object' then raise exception 'Each order item must be an object'; end if;
