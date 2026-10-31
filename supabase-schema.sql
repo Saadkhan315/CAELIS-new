@@ -97,32 +97,40 @@ create or replace function public.place_order(
 declare
  v_user uuid := auth.uid(); v_order_id uuid; v_order_number text; v_total numeric(12,2):=0;
  v_item jsonb; v_variant public.product_variants%rowtype; v_product public.products%rowtype;
- v_qty integer; v_line numeric(12,2);
+ v_qty integer; v_unit_price numeric(12,2); v_line numeric(12,2);
 begin
  if v_user is null then raise exception 'Sign in before placing an order'; end if;
- if p_payment_method <> 'cod' then raise exception 'Only cash on delivery is currently supported'; end if;
+ if coalesce(p_payment_method,'') <> 'cod' then raise exception 'Only cash on delivery is currently supported'; end if;
  if length(trim(coalesce(p_customer_name,'')))<2 or length(trim(coalesce(p_customer_phone,'')))<7 or position('@' in coalesce(p_customer_email,''))<2 or length(trim(coalesce(p_shipping_address,'')))<5 or length(trim(coalesce(p_city,'')))<2 then
    raise exception 'Please provide valid delivery details';
  end if;
- if jsonb_typeof(p_items) <> 'array' or jsonb_array_length(p_items)<1 or jsonb_array_length(p_items)>30 then raise exception 'Your bag is empty or contains too many line items'; end if;
+ if p_items is null or jsonb_typeof(p_items) is distinct from 'array' or jsonb_array_length(p_items)<1 or jsonb_array_length(p_items)>30 then
+   raise exception 'Your bag is empty or contains too many line items';
+ end if;
  insert into public.orders(user_id,customer_name,customer_email,customer_phone,shipping_address,city,postal_code,country,payment_method,payment_status,status,total_pkr)
- values(v_user,trim(p_customer_name),trim(p_customer_email),trim(p_customer_phone),trim(p_shipping_address),trim(p_city),nullif(trim(coalesce(p_postal_code,'')),''),coalesce(nullif(trim(p_country),''),'Pakistan'),'cod','pending','pending',0)
+ values(v_user,trim(p_customer_name),trim(p_customer_email),trim(p_customer_phone),trim(p_shipping_address),trim(p_city),nullif(trim(coalesce(p_postal_code,'')),''),coalesce(nullif(trim(p_country,''),''),'Pakistan'),'cod','pending','pending',0)
  returning id,order_number into v_order_id,v_order_number;
  for v_item in select value from jsonb_array_elements(p_items) loop
-   v_qty := (v_item->>'quantity')::integer;
-   if v_qty<1 or v_qty>20 then raise exception 'Invalid quantity'; end if;
-   select * into v_variant from public.product_variants where id=(v_item->>'variant_id')::uuid for update;
+   if jsonb_typeof(v_item) is distinct from 'object' then raise exception 'Each order item must be an object'; end if;
+   begin v_qty := (v_item->>'quantity')::integer;
+   exception when others then raise exception 'Each order item must have a valid quantity'; end;
+   if v_qty is null or v_qty<1 or v_qty>20 then raise exception 'Invalid quantity'; end if;
+   begin
+     select * into v_variant from public.product_variants where id=(v_item->>'variant_id')::uuid for update;
+   exception when invalid_text_representation then raise exception 'A selected size/colour is invalid'; end;
    if not found then raise exception 'A selected size/colour is no longer available'; end if;
    if v_variant.stock<v_qty then raise exception 'Not enough stock for SKU %',v_variant.sku; end if;
    select * into v_product from public.products where id=v_variant.product_id and active=true;
    if not found then raise exception 'A selected product is no longer published'; end if;
-   v_line:=v_product.price_pkr*v_qty; v_total:=v_total+v_line;
+   v_unit_price := case when v_product.sale_price_pkr is not null and v_product.sale_price_pkr>=0 and v_product.sale_price_pkr<v_product.price_pkr then v_product.sale_price_pkr else v_product.price_pkr end;
+   v_line:=v_unit_price*v_qty; v_total:=v_total+v_line;
    insert into public.order_items(order_id,variant_id,product_name,sku,size,color,unit_price_pkr,quantity,line_total_pkr)
-   values(v_order_id,v_variant.id,v_product.name,v_variant.sku,v_variant.size,v_variant.color,v_product.price_pkr,v_qty,v_line);
+   values(v_order_id,v_variant.id,v_product.name,v_variant.sku,v_variant.size,v_variant.color,v_unit_price,v_qty,v_line);
    update public.product_variants set stock=stock-v_qty where id=v_variant.id;
  end loop;
  update public.orders set total_pkr=v_total where id=v_order_id;
  return jsonb_build_object('id',v_order_id,'order_number',v_order_number,'total_pkr',v_total);
 end; $$;
-revoke all on function public.place_order(jsonb,text,text,text,text,text,text,text,text) from public,anon;
+revoke execute on function public.restore_cancelled_order_stock() from public, anon, authenticated;
+revoke execute on function public.place_order(jsonb,text,text,text,text,text,text,text,text) from public,anon;
 grant execute on function public.place_order(jsonb,text,text,text,text,text,text,text,text) to authenticated;
