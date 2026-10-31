@@ -42,12 +42,24 @@ document.addEventListener("DOMContentLoaded", () => {
   $("footerAccount").addEventListener("click", async () => { showModal("accountModal"); await refreshAuth(); });
   $("cartOpen").addEventListener("click", () => { renderCart(); showModal("cartModal"); });
   $("footerBag").addEventListener("click", () => { renderCart(); showModal("cartModal"); });
-  $("authSwitch").addEventListener("click", () => { state.signup = !state.signup; $("accountTitle").textContent = state.signup ? "Create your account." : "Welcome back."; $("authSubmit").textContent = state.signup ? "Create account" : "Sign in"; $("authSwitch").textContent = state.signup ? "Already registered? Sign in" : "Need an account? Create one"; $("authPassword").autocomplete = state.signup ? "new-password" : "current-password"; });
+  $("authSwitch").addEventListener("click", () => { state.signup = !state.signup; $("accountTitle").textContent = state.signup ? "Create your account." : "Welcome back."; $("authSubmit").textContent = state.signup ? "Create account" : "Sign in"; $("authSwitch").textContent = state.signup ? "Already registered? Sign in" : "Need an account? Create one"; $("authPassword").autocomplete = state.signup ? "new-password" : "current-password"; $("authForgotPassword").hidden = state.signup; });
+  $("authForgotPassword").addEventListener("click", async () => {
+    if (!db) { $("authMessage").textContent = "Connect Supabase before requesting a password reset."; return; }
+    const email = $("authEmail").value.trim();
+    if (!email) { $("authMessage").textContent = "Enter your email address first."; $("authEmail").focus(); return; }
+    $("authForgotPassword").disabled = true; $("authMessage").textContent = "Sending password-reset email…";
+    try {
+      const redirectTo = new URL("update-password.html?next=index.html", window.location.href).href;
+      const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo });
+      $("authMessage").textContent = error ? "Could not send the reset email. Check the setup and try again." : "If this email belongs to an account, a reset link has been sent. Check your inbox and spam folder.";
+    } catch { $("authMessage").textContent = "Could not send the reset email. Check your connection and try again."; }
+    finally { $("authForgotPassword").disabled = false; }
+  });
   async function refreshAuth() {
     if (!db) { $("accountState").textContent = "Account, saved order history and checkout become available after Supabase is connected."; $("authMessage").textContent = "Store setup is required. Follow SETUP-GUIDE.md in the project repository."; return; }
     const { data } = await db.auth.getUser(); state.user = data?.user || null;
     $("accountState").textContent = state.user ? "Signed in as " + state.user.email : "Sign in or create an account to continue.";
-    $("signOutButton").hidden = !state.user; $("authForm").hidden = !!state.user; $("authSwitch").hidden = !!state.user;
+    $("signOutButton").hidden = !state.user; $("authForm").hidden = !!state.user; $("authSwitch").hidden = !!state.user; $("authForgotPassword").hidden = !!state.user || state.signup;
     if (state.user) await loadOrderHistory();
   }
   $("authForm").addEventListener("submit", async e => {
@@ -55,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!db) { $("authMessage").textContent = "Connect Supabase first; see SETUP-GUIDE.md."; return; }
     const email = $("authEmail").value.trim(), password = $("authPassword").value;
     $("authSubmit").disabled = true; $("authMessage").textContent = "Please wait…";
-    const result = state.signup ? await db.auth.signUp({ email, password }) : await db.auth.signInWithPassword({ email, password });
+    const result = state.signup ? await db.auth.signUp({ email, password, options: { emailRedirectTo: new URL("index.html", window.location.href).href } }) : await db.auth.signInWithPassword({ email, password });
     $("authSubmit").disabled = false;
     if (result.error) { $("authMessage").textContent = result.error.message; return; }
     $("authMessage").textContent = state.signup ? "Account request sent. Check your email if confirmation is enabled." : "You are signed in.";
