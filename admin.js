@@ -22,23 +22,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = $("adminEmail").value.trim();
     if (!email) { say("loginMessage","Enter your account email above first, then click Forgot password?"); $("adminEmail").focus(); return; }
     say("loginMessage","Sending password-reset email…");
-    const redirectTo = window.location.origin + window.location.pathname;
+    const redirectTo = new URL("update-password.html?next=admin.html", window.location.href).href;
     const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo });
     say("loginMessage", error ? "Could not send reset email: " + error.message : "If this email belongs to an account, a password-reset link has been sent. Check your inbox and spam folder.");
   });
-  if (window.location.hash.includes("type=recovery")) {
-    setTimeout(async () => {
-      if (!db) return;
-      const first = window.prompt("Enter your new CAELIS admin password (at least 8 characters):");
-      if (!first) return;
-      if (first.length < 8) { alert("Use at least 8 characters, then open the reset link again."); return; }
-      const second = window.prompt("Enter the new password one more time:");
-      if (first !== second) { alert("The passwords did not match. Open the reset link again to retry."); return; }
-      const { error } = await db.auth.updateUser({ password: first });
-      if (error) alert("Password was not updated: " + error.message);
-      else { alert("Password updated. Now sign in with your new password."); window.history.replaceState({}, document.title, window.location.pathname); await start(); }
-    }, 300);
-  }
   $("signOutButton").addEventListener("click", async () => { if(db) await db.auth.signOut(); $("adminWorkspace").hidden=true; $("adminLoginPanel").hidden=false; say("adminStatus","Signed out."); });
   $("productForm").addEventListener("submit", async e => {
     e.preventDefault(); if(!db)return;
