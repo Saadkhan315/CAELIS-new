@@ -37,7 +37,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if(pe){say("productMessage","Product not saved: "+pe.message);$("saveProductButton").disabled=false;return;}
     const {error:ve}=await db.from("product_variants").insert({product_id:product.id,size,color,sku,stock});
     $("saveProductButton").disabled=false;
-    if(ve){say("productMessage","Product was created, but its size/colour stock failed: "+ve.message+" Check the schema.");return;}
+    if(ve){
+      const cleanup = await db.from("products").delete().eq("id",product.id);
+      say("productMessage", cleanup.error
+        ? "Product record was created, but its first size/colour failed: "+ve.message+". Cleanup also failed: "+cleanup.error.message+". Please check the product list before retrying."
+        : "Product was not completed because its first size/colour could not be saved. The incomplete product record was removed. Reason: "+ve.message);
+      await loadProducts();
+      return;
+    }
     say("productMessage","Saved. Your product is in the catalogue."); $("productForm").reset(); await loadProducts();
   });
   async function loadProducts() {
