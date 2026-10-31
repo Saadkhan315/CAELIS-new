@@ -138,3 +138,10 @@ end; $$;
 revoke execute on function public.restore_cancelled_order_stock() from public, anon, authenticated;
 revoke execute on function public.place_order(jsonb,text,text,text,text,text,text,text,text) from public,anon;
 grant execute on function public.place_order(jsonb,text,text,text,text,text,text,text,text) to authenticated;
+
+
+-- Least-privilege table grants. RLS policies remain the row-level boundary.
+-- Anonymous visitors may read published catalogue rows only; all order data is private.
+REVOKE ALL PRIVILEGES ON TABLE public.products, public.product_variants, public.orders, public.order_items FROM anon;
+GRANT SELECT ON TABLE public.products, public.product_variants TO anon;
+REVOKE TRUNCATE, REFERENCES, TRIGGER ON TABLE public.products, public.product_variants, public.orders, public.order_items FROM authenticated;
