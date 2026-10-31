@@ -35,3 +35,14 @@ Open `/admin.html`, sign in as the admin, and add a real product, its image URL,
 - Products don't appear: run the SQL script, publish a product and add at least one size/colour variant with stock.
 - Admin access denied: check that protected `app_metadata.role` is `admin`, then sign out and back in.
 - Order rejected: sign in, verify the product is published and the selected variant has enough stock, and check the error shown in the checkout.
+
+
+## 8. Password recovery and authentication hardening
+- The storefront and admin sign-in pages use Supabase Auth. Passwords are sent to Supabase Auth and must never be stored in your own public tables.
+- Forgot-password links now redirect to `update-password.html`. In Supabase Dashboard → Authentication → URL Configuration, set the Site URL to your deployed storefront URL and add the exact deployed `update-password.html` URL to Redirect URLs. If your site is hosted on GitHub Pages, include the repository path, for example `https://YOUR-OWNER.github.io/CAELIS-new/update-password.html`; replace the placeholder with the real deployed URL.
+- Keep email confirmation enabled for sign-up. Configure a production SMTP provider before launch; the built-in email sender is rate-limited and intended for testing.
+- Never put a Supabase service-role or secret key in `supabase-config.js`, HTML, or JavaScript. Use only the publishable/anon key in the browser.
+- Keep authorization based on protected `app_metadata.role = admin`, never `user_metadata`. Assign the role only from trusted Supabase admin controls; then sign out and back in to refresh the role claim.
+- Before launch, run the Supabase Security Advisor and verify every exposed table has RLS. Test with two separate customer accounts that one cannot read or modify the other's orders, products, stock, or order items. Confirm a regular customer is denied from `/admin.html` and database writes even if they open developer tools.
+- Configure a strong minimum password length, leaked-password protection if available on your plan, and MFA for administrator accounts in Supabase Auth settings. These dashboard settings cannot be changed from the static website code.
+- Password reset email responses are intentionally generic so the storefront does not reveal whether an email address has an account.
