@@ -67,17 +67,17 @@ alter table public.order_items enable row level security;
 drop policy if exists "Public can view active products" on public.products;
 create policy "Public can view active products" on public.products for select to anon,authenticated using(active=true);
 drop policy if exists "Admins manage products" on public.products;
-create policy "Admins manage products" on public.products for all to authenticated using((select auth.jwt()->'app_metadata'->>'role')='admin') with check((select auth.jwt()->'app_metadata'->>'role')='admin');
+create policy "Admins manage products" on public.products for all to authenticated using(((select auth.jwt())->'app_metadata'->>'role')='admin') with check(((select auth.jwt())->'app_metadata'->>'role')='admin');
 drop policy if exists "Public can view variants of active products" on public.product_variants;
 create policy "Public can view variants of active products" on public.product_variants for select to anon,authenticated using(exists(select 1 from public.products p where p.id=product_variants.product_id and p.active=true));
 drop policy if exists "Admins manage variants" on public.product_variants;
-create policy "Admins manage variants" on public.product_variants for all to authenticated using((select auth.jwt()->'app_metadata'->>'role')='admin') with check((select auth.jwt()->'app_metadata'->>'role')='admin');
+create policy "Admins manage variants" on public.product_variants for all to authenticated using(((select auth.jwt())->'app_metadata'->>'role')='admin') with check(((select auth.jwt())->'app_metadata'->>'role')='admin');
 drop policy if exists "Admins view and manage orders" on public.orders;
-create policy "Admins view and manage orders" on public.orders for all to authenticated using((select auth.jwt()->'app_metadata'->>'role')='admin') with check((select auth.jwt()->'app_metadata'->>'role')='admin');
+create policy "Admins view and manage orders" on public.orders for all to authenticated using(((select auth.jwt())->'app_metadata'->>'role')='admin') with check(((select auth.jwt())->'app_metadata'->>'role')='admin');
 drop policy if exists "Customers view own orders" on public.orders;
 create policy "Customers view own orders" on public.orders for select to authenticated using(user_id=(select auth.uid()));
 drop policy if exists "Admins view and manage order items" on public.order_items;
-create policy "Admins view and manage order items" on public.order_items for all to authenticated using((select auth.jwt()->'app_metadata'->>'role')='admin') with check((select auth.jwt()->'app_metadata'->>'role')='admin');
+create policy "Admins view and manage order items" on public.order_items for all to authenticated using(((select auth.jwt())->'app_metadata'->>'role')='admin') with check(((select auth.jwt())->'app_metadata'->>'role')='admin');
 drop policy if exists "Customers view own order items" on public.order_items;
 create policy "Customers view own order items" on public.order_items for select to authenticated using(exists(select 1 from public.orders o where o.id=order_items.order_id and o.user_id=(select auth.uid())));
 insert into storage.buckets(id,name,public) values('product-images','product-images',true) on conflict(id) do nothing;
@@ -105,7 +105,10 @@ begin
  if length(trim(coalesce(p_customer_name,'')))<2 or length(trim(coalesce(p_customer_phone,'')))<7 or position('@' in coalesce(p_customer_email,''))<2 or length(trim(coalesce(p_shipping_address,'')))<5 or length(trim(coalesce(p_city,'')))<2 then
    raise exception 'Please provide valid delivery details';
  end if;
- if p_items is null or jsonb_typeof(p_items) is distinct from 'array' or jsonb_array_length(p_items)<1 or jsonb_array_length(p_items)>30 then
+ if p_items is null or jsonb_typeof(p_items) is distinct from 'array' then
+   raise exception 'Order items must be a JSON array';
+ end if;
+ if jsonb_array_length(p_items)<1 or jsonb_array_length(p_items)>30 then
    raise exception 'Your bag is empty or contains too many line items';
  end if;
  insert into public.orders(user_id,customer_name,customer_email,customer_phone,shipping_address,city,postal_code,country,payment_method,payment_status,status,total_pkr)
