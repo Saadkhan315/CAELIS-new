@@ -40,6 +40,7 @@ create index if not exists variants_product_idx on public.product_variants(produ
 create index if not exists orders_created_idx on public.orders(created_at desc);
 create index if not exists orders_user_idx on public.orders(user_id,created_at desc);
 create index if not exists order_items_order_idx on public.order_items(order_id);
+create index if not exists order_items_variant_idx on public.order_items(variant_id);
 
 -- Return stock when an administrator cancels an order; guard against double-restocking.
 alter table public.orders add column if not exists stock_restored boolean not null default false;
@@ -74,11 +75,11 @@ create policy "Admins manage variants" on public.product_variants for all to aut
 drop policy if exists "Admins view and manage orders" on public.orders;
 create policy "Admins view and manage orders" on public.orders for all to authenticated using((select auth.jwt()->'app_metadata'->>'role')='admin') with check((select auth.jwt()->'app_metadata'->>'role')='admin');
 drop policy if exists "Customers view own orders" on public.orders;
-create policy "Customers view own orders" on public.orders for select to authenticated using(user_id=auth.uid());
+create policy "Customers view own orders" on public.orders for select to authenticated using(user_id=(select auth.uid()));
 drop policy if exists "Admins view and manage order items" on public.order_items;
 create policy "Admins view and manage order items" on public.order_items for all to authenticated using((select auth.jwt()->'app_metadata'->>'role')='admin') with check((select auth.jwt()->'app_metadata'->>'role')='admin');
 drop policy if exists "Customers view own order items" on public.order_items;
-create policy "Customers view own order items" on public.order_items for select to authenticated using(exists(select 1 from public.orders o where o.id=order_items.order_id and o.user_id=auth.uid()));
+create policy "Customers view own order items" on public.order_items for select to authenticated using(exists(select 1 from public.orders o where o.id=order_items.order_id and o.user_id=(select auth.uid())));
 insert into storage.buckets(id,name,public) values('product-images','product-images',true) on conflict(id) do nothing;
 drop policy if exists "Public can view product photos" on storage.objects;
 create policy "Public can view product photos" on storage.objects for select to anon,authenticated using(bucket_id='product-images');
