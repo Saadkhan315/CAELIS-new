@@ -145,3 +145,30 @@ grant execute on function public.place_order(jsonb,text,text,text,text,text,text
 REVOKE ALL PRIVILEGES ON TABLE public.products, public.product_variants, public.orders, public.order_items FROM anon;
 GRANT SELECT ON TABLE public.products, public.product_variants TO anon;
 REVOKE TRUNCATE, REFERENCES, TRIGGER ON TABLE public.products, public.product_variants, public.orders, public.order_items FROM authenticated;
+
+
+-- Additional live integrity checks; safe to rerun.
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='products_price_positive_check' AND conrelid='public.products'::regclass) THEN
+    ALTER TABLE public.products ADD CONSTRAINT products_price_positive_check CHECK (price_pkr > 0);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='products_sale_price_valid_check' AND conrelid='public.products'::regclass) THEN
+    ALTER TABLE public.products ADD CONSTRAINT products_sale_price_valid_check CHECK (sale_price_pkr IS NULL OR (sale_price_pkr >= 0 AND sale_price_pkr < price_pkr));
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='product_variants_stock_nonnegative_check' AND conrelid='public.product_variants'::regclass) THEN
+    ALTER TABLE public.product_variants ADD CONSTRAINT product_variants_stock_nonnegative_check CHECK (stock >= 0);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='order_items_quantity_positive_check' AND conrelid='public.order_items'::regclass) THEN
+    ALTER TABLE public.order_items ADD CONSTRAINT order_items_quantity_positive_check CHECK (quantity > 0);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='order_items_unit_price_nonnegative_check' AND conrelid='public.order_items'::regclass) THEN
+    ALTER TABLE public.order_items ADD CONSTRAINT order_items_unit_price_nonnegative_check CHECK (unit_price_pkr >= 0);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='order_items_line_total_nonnegative_check' AND conrelid='public.order_items'::regclass) THEN
+    ALTER TABLE public.order_items ADD CONSTRAINT order_items_line_total_nonnegative_check CHECK (line_total_pkr >= 0);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='orders_total_nonnegative_check' AND conrelid='public.orders'::regclass) THEN
+    ALTER TABLE public.orders ADD CONSTRAINT orders_total_nonnegative_check CHECK (total_pkr >= 0);
+  END IF;
+END $$;
