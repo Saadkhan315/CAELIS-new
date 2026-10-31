@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const db = configReady ? window.supabase.createClient(window.CAELIS_SUPABASE_URL, window.CAELIS_SUPABASE_ANON_KEY) : null;
   const state = { products: [], variants: [], cart: readCart(), user: null, signup: false, category: "all", search: "", sort: "featured" };
   const money = n => new Intl.NumberFormat("en-PK", { style: "currency", currency: "PKR", maximumFractionDigits: 0 }).format(Number(n) || 0);
+  const priceOf = p => p && p.sale_price_pkr != null && Number(p.sale_price_pkr) >= 0 && Number(p.sale_price_pkr) < Number(p.price_pkr) ? Number(p.sale_price_pkr) : Number(p?.price_pkr) || 0;
+  const priceMarkup = p => p && p.sale_price_pkr != null && Number(p.sale_price_pkr) >= 0 && Number(p.sale_price_pkr) < Number(p.price_pkr) ? "<span class=\"sale-price\">" + money(p.sale_price_pkr) + "</span> <del class=\"regular-price\">" + money(p.price_pkr) + "</del>" : money(p?.price_pkr);
   const dateTime = v => v ? new Intl.DateTimeFormat("en-PK", { dateStyle: "medium", timeStyle: "short" }).format(new Date(v)) : "Date unavailable";
   const safe = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
   function readCart() { try { const value = JSON.parse(localStorage.getItem("caelis-cart") || "[]"); return Array.isArray(value) ? value.filter(i => i && typeof i.variant_id === "string" && Number.isInteger(i.quantity) && i.quantity > 0 && i.quantity < 100) : []; } catch { return []; } }
@@ -99,8 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function visibleProducts() {
     let list = state.products.filter(p => (state.category === "all" || p.category.toLowerCase().replace(/\s+/g, "-") === state.category) && (p.name + " " + p.description + " " + p.category).toLowerCase().includes(state.search.toLowerCase()));
-    if (state.sort === "price-low") list.sort((a,b) => Number(a.price_pkr)-Number(b.price_pkr));
-    if (state.sort === "price-high") list.sort((a,b) => Number(b.price_pkr)-Number(a.price_pkr));
+    if (state.sort === "price-low") list.sort((a,b) => priceOf(a)-priceOf(b));
+    if (state.sort === "price-high") list.sort((a,b) => priceOf(b)-priceOf(a));
     if (state.sort === "name") list.sort((a,b) => a.name.localeCompare(b.name));
     return list;
   }
@@ -113,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement("article"); card.className = "product-card"; card.style.animationDelay = Math.min(index * 50, 250) + "ms";
       const image = p.image_url ? "<img src='" + safe(p.image_url) + "' alt='" + safe(p.name) + "' loading='lazy'>" : "<div class='product-placeholder'>CAELIS</div>";
       const sizes = [...new Set(variants.map(v => v.size))], colors = [...new Set(variants.map(v => v.color))];
-      card.innerHTML = "<div class='product-image-wrap'>" + image + "</div><div class='product-card-info'><p class='product-category'>" + safe(p.category) + "</p><h3>" + safe(p.name) + "</h3><p class='product-description'>" + safe(p.description) + "</p><div class='product-price'>" + money(p.price_pkr) + "</div><label>Size<select class='variant-size' aria-label='Size for " + safe(p.name) + "'>" + sizes.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("") + "</select></label><label>Colour<select class='variant-color' aria-label='Colour for " + safe(p.name) + "'>" + colors.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("") + "</select></label><p class='stock-note'></p><button class='add-to-bag' type='button'>ADD TO BAG +</button></div>";
+      card.innerHTML = "<div class='product-image-wrap'>" + image + "</div><div class='product-card-info'><p class='product-category'>" + safe(p.category) + "</p><h3>" + safe(p.name) + "</h3><p class='product-description'>" + safe(p.description) + "</p><div class='product-price'>" + priceMarkup(p) + "</div><label>Size<select class='variant-size' aria-label='Size for " + safe(p.name) + "'>" + sizes.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("") + "</select></label><label>Colour<select class='variant-color' aria-label='Colour for " + safe(p.name) + "'>" + colors.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("") + "</select></label><p class='stock-note'></p><button class='add-to-bag' type='button'>ADD TO BAG +</button></div>";
       const sizeEl = card.querySelector(".variant-size"), colorEl = card.querySelector(".variant-color"), stockNote = card.querySelector(".stock-note"), add = card.querySelector(".add-to-bag");
       function selectedVariant() { return variants.find(v => v.size === sizeEl.value && v.color === colorEl.value); }
       function updateStock() { const v = selectedVariant(); stockNote.textContent = v && v.stock > 0 ? "Available · " + v.stock + " in stock" : "Currently unavailable"; add.disabled = !v || v.stock < 1; }
@@ -129,9 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let subtotal = 0;
     if (!lines.length) box.textContent = state.cart.length ? "Your saved bag needs a catalogue refresh. Reload the store after products are available." : "Your bag is waiting for its first CAELIS piece.";
     lines.forEach(line => {
-      subtotal += Number(line.product.price_pkr) * line.quantity;
+      subtotal += priceOf(line.product) * line.quantity;
       const row = document.createElement("div"); row.className = "cart-line";
-      row.innerHTML = "<div><strong>" + safe(line.product.name) + "</strong><p>" + safe(line.variant.color) + " · Size " + safe(line.variant.size) + "</p><p>" + money(line.product.price_pkr) + " × " + line.quantity + "</p></div><div class='cart-line-actions'><button type='button' data-minus='" + safe(line.variant_id) + "' aria-label='Decrease quantity'>−</button><button type='button' data-plus='" + safe(line.variant_id) + "' aria-label='Increase quantity'>+</button><button type='button' data-remove='" + safe(line.variant_id) + "'>Remove</button></div>";
+      row.innerHTML = "<div><strong>" + safe(line.product.name) + "</strong><p>" + safe(line.variant.color) + " · Size " + safe(line.variant.size) + "</p><p>" + priceMarkup(line.product) + " × " + line.quantity + "</p></div><div class='cart-line-actions'><button type='button' data-minus='" + safe(line.variant_id) + "' aria-label='Decrease quantity'>−</button><button type='button' data-plus='" + safe(line.variant_id) + "' aria-label='Increase quantity'>+</button><button type='button' data-remove='" + safe(line.variant_id) + "'>Remove</button></div>";
       box.appendChild(row);
     });
     $("cartSubtotal").textContent = money(subtotal);
@@ -168,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadCatalogue() {
     if (!db) { status("Store setup required: add the Supabase project URL and public key to supabase-config.js. No demo products are shown."); renderProducts(); renderCart(); return; }
     status("Loading the CAELIS catalogue…");
-    const { data: products, error: productError } = await db.from("products").select("id,name,description,category,price_pkr,image_url").eq("active", true).order("created_at", { ascending: false });
+    const { data: products, error: productError } = await db.from("products").select("id,name,description,category,price_pkr,sale_price_pkr,image_url").eq("active", true).order("created_at", { ascending: false });
     if (productError) { status("Catalogue connection failed. Check that supabase-schema.sql was run in your Supabase project."); console.error(productError); return; }
     state.products = products || [];
     const ids = state.products.map(p => p.id);
