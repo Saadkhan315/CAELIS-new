@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function saveCart() { try { localStorage.setItem("caelis-cart", JSON.stringify(state.cart)); } catch { toast("Your browser could not save the bag."); } }
   let toastTimer;
   function toast(message) { const el = $("toast"); el.textContent = message; el.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 3200); }
-  function status(message) { $("storeStatus").textContent = message; }
+  function status(_message) { const el = $("storeStatus"); if (el) { el.textContent = ""; el.hidden = true; } }
   function showModal(id) { $(id).hidden = false; document.body.classList.add("modal-open"); }
   function hideModal(id) { $(id).hidden = true; if (!document.querySelector(".modal-backdrop:not([hidden])")) document.body.classList.remove("modal-open"); }
   document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => hideModal(b.dataset.close)));
@@ -108,8 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function renderProducts() {
     const grid = $("productGrid"); grid.replaceChildren(); const list = visibleProducts();
-    if (!list.length) { status(configReady ? "No published CAELIS products yet. This store intentionally contains no demo products. Add your real items through Store Admin." : "Store setup required: connect Supabase and publish your own products. No demo products are shown."); return; }
-    status(list.length + (list.length === 1 ? " official CAELIS piece" : " official CAELIS pieces"));
+    if (!list.length) { status(""); return; }
+    status("");
     list.forEach((p, index) => {
       const variants = state.variants.filter(v => v.product_id === p.id);
       const card = document.createElement("article"); card.className = "product-card"; card.style.animationDelay = Math.min(index * 50, 250) + "ms";
