@@ -108,6 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function renderProducts() {
     const grid = $("productGrid"); grid.replaceChildren(); const list = visibleProducts();
+    const tools = document.querySelector(".store-tools");
+    if (tools) tools.hidden = list.length === 0;
+    grid.hidden = list.length === 0;
     if (!list.length) { status(""); return; }
     status("");
     list.forEach((p, index) => {
