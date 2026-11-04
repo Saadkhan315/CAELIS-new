@@ -506,3 +506,11 @@ p,.muted-copy,.faq-list details p{font-weight:400}
 @media(max-width:760px){.payment-settings-list{grid-template-columns:1fr}}
 
 .history-tracking{padding:10px 12px;border-left:1px solid var(--ice);background:rgba(169,215,232,.045);font-size:12px;letter-spacing:.25px}.history-tracking strong{font-family:var(--serif);font-style:italic;font-weight:600;color:var(--ice)}[data-order-tracking]{min-width:190px;max-width:240px;padding:10px;background:#090b0c;border:1px solid rgba(169,215,232,.24);color:var(--ivory);font:inherit}[data-order-tracking]:focus{outline:1px solid var(--ice);border-color:var(--ice)}.admin-item-actions{gap:9px;flex-wrap:wrap}
+
+/* Courier assignment and fulfilment controls */
+.admin-item-actions select,.admin-item-actions input{min-width:170px;max-width:240px;padding:10px 12px;background:#090b0c;border:1px solid rgba(169,215,232,.24);color:var(--ivory);font:inherit;font-size:11px;border-radius:0}
+.admin-item-actions select:focus,.admin-item-actions input:focus{outline:1px solid var(--ice);border-color:var(--ice)}
+.admin-item-actions button{white-space:nowrap}
+.history-tracking{line-height:1.8}
+.history-tracking strong{overflow-wrap:anywhere}
+@media(max-width:680px){.admin-item-actions{display:grid;grid-template-columns:1fr;width:100%}.admin-item-actions select,.admin-item-actions input{width:100%;max-width:none}}
