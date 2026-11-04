@@ -514,3 +514,15 @@ p,.muted-copy,.faq-list details p{font-weight:400}
 .history-tracking{line-height:1.8}
 .history-tracking strong{overflow-wrap:anywhere}
 @media(max-width:680px){.admin-item-actions{display:grid;grid-template-columns:1fr;width:100%}.admin-item-actions select,.admin-item-actions input{width:100%;max-width:none}}
+
+/* CAELIS order dashboard */
+.order-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:24px}
+.order-metrics article{padding:18px 16px;border:1px solid rgba(169,215,232,.2);background:linear-gradient(145deg,rgba(169,215,232,.055),rgba(196,166,106,.035));min-width:0}
+.order-metrics span{display:block;color:var(--muted);font-size:10px;letter-spacing:1.1px;text-transform:uppercase;font-style:italic}
+.order-metrics strong{display:block;margin-top:12px;color:var(--gold2);font-family:var(--serif);font-size:clamp(22px,2.5vw,34px);font-weight:500;overflow-wrap:anywhere}
+.order-filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:12px;align-items:end;margin:20px 0}
+.order-filters label{display:grid;gap:7px;color:var(--muted);font-size:10px;letter-spacing:.8px}
+.order-filters input,.order-filters select{min-width:0;width:100%;padding:11px;background:#090b0c;border:1px solid rgba(169,215,232,.22);color:var(--ivory);font:inherit}
+.order-filters input:focus,.order-filters select:focus{outline:1px solid var(--ice);border-color:var(--ice)}
+@media(max-width:900px){.order-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.order-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.order-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.order-filters{grid-template-columns:1fr}.order-filters .button{width:100%}}
