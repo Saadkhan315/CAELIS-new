@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const role = data.user.app_metadata?.role;
     if (role !== "admin") { say("adminStatus","Access denied. This account does not have app_metadata.role = admin. Assign it through trusted Supabase admin controls."); $("adminLoginPanel").hidden=true; $("adminWorkspace").hidden=true; return; }
     say("adminStatus","Authenticated as store administrator."); $("adminLoginPanel").hidden=true; $("adminWorkspace").hidden=false;
-    await Promise.all([loadProducts(),loadOrders()]);
+    await Promise.all([loadProducts(),loadOrders(),loadPaymentSettings()]);
   }
   $("adminLogin").addEventListener("submit", async e => { e.preventDefault(); if(!db)return; say("loginMessage","Signing in…"); const {error}=await db.auth.signInWithPassword({email:$("adminEmail").value.trim(),password:$("adminPassword").value}); say("loginMessage",error?error.message:"Signed in."); await start(); });
   $("forgotPasswordButton").addEventListener("click", async () => {
@@ -57,6 +57,32 @@ document.addEventListener("DOMContentLoaded", () => {
     box.querySelectorAll("[data-add-variant]").forEach(b=>b.addEventListener("click",async()=>{const size=prompt("Size (for example S, M, L, XL):");if(!size||!size.trim())return;const color=prompt("Colour (for example Black):");if(!color||!color.trim())return;const stockText=prompt("Opening stock (whole number):","0");if(stockText===null)return;const stock=Number(stockText);if(!Number.isInteger(stock)||stock<0){say("adminStatus","Stock must be a whole number of zero or more.");return;}const sku=prompt("Unique SKU:",("CA-"+crypto.randomUUID().slice(0,8).toUpperCase()));if(!sku||!sku.trim())return;const {error}=await db.from("product_variants").insert({product_id:b.dataset.addVariant,size:size.trim(),color:color.trim(),sku:sku.trim(),stock});if(error)say("adminStatus","Variant was not saved: "+error.message);else {say("adminStatus","Size/colour variant added.");await loadProducts();}}));
     box.querySelectorAll("[data-publish]").forEach(b=>b.addEventListener("click",async()=>{const {error}=await db.from("products").update({active:b.dataset.active==="true"}).eq("id",b.dataset.publish);if(error)say("adminStatus",error.message);else await loadProducts();}));
     box.querySelectorAll("[data-delete]").forEach(b=>b.addEventListener("click",async()=>{if(!confirm("Delete this product and its variants?"))return;const {error}=await db.from("products").delete().eq("id",b.dataset.delete);if(error)say("adminStatus",error.message);else await loadProducts();}));
+  }
+  async function loadPaymentSettings() {
+    const box=$("paymentSettingsList"); box.textContent="Loading payment settings…";
+    const {data,error}=await db.from("payment_method_settings").select("method_key,display_name,account_title,account_number,bank_name,iban,instructions,enabled").order("display_name");
+    if(error){box.textContent="Payment settings could not be loaded: "+error.message;return;}
+    box.replaceChildren();
+    const methods=["easypaisa","jazzcash","raast","nayapay","bank_transfer"];
+    const names={easypaisa:"Easypaisa",jazzcash:"JazzCash",raast:"Raast",nayapay:"NayaPay",bank_transfer:"Bank transfer"};
+    methods.forEach(key=>{
+      const item=(data||[]).find(x=>x.method_key===key)||{method_key:key,display_name:names[key],account_title:"",account_number:"",bank_name:"",iban:"",instructions:"",enabled:false};
+      const card=document.createElement("article");card.className="payment-setting-card";
+      const title=document.createElement("h3");title.textContent=names[key];card.appendChild(title);
+      const form=document.createElement("form");form.className="stack-form payment-setting-form";
+      const fields=[["account_title","Account title","text"],["account_number","Account number / mobile wallet number","text"],["bank_name","Bank name (bank transfer only)","text"],["iban","IBAN (optional)","text"],["instructions","Customer payment instructions","textarea"]];
+      fields.forEach(([field,label,type])=>{const wrap=document.createElement("label");wrap.textContent=label;const input=type==="textarea"?document.createElement("textarea"):document.createElement("input");if(type!=="textarea")input.type=type;input.name=field;input.value=item[field]||"";input.maxLength=field==="instructions"?500:160;if(type==="textarea")input.rows=2;wrap.appendChild(input);form.appendChild(wrap);});
+      const enableLabel=document.createElement("label");enableLabel.className="payment-enable";const toggle=document.createElement("input");toggle.type="checkbox";toggle.name="enabled";toggle.checked=!!item.enabled;enableLabel.append(toggle,document.createTextNode(" Enable this method for customer payment instructions"));form.appendChild(enableLabel);
+      const save=document.createElement("button");save.type="submit";save.className="button button-dark";save.textContent="Save "+names[key]+" settings";form.appendChild(save);
+      form.addEventListener("submit",async e=>{e.preventDefault();const values=Object.fromEntries(new FormData(form).entries());const payload={method_key:key,display_name:names[key],account_title:String(values.account_title||"").trim(),account_number:String(values.account_number||"").trim(),bank_name:String(values.bank_name||"").trim(),iban:String(values.iban||"").trim(),instructions:String(values.instructions||"").trim(),enabled:toggle.checked,updated_at:new Date().toISOString()};
+        if(payload.enabled&&!payload.account_number&&!payload.iban){say("paymentSettingsMessage","Add an account or wallet number / IBAN before enabling "+names[key]+".");return;}
+        if(key==="bank_transfer"&&payload.enabled&&!payload.bank_name){say("paymentSettingsMessage","Enter the bank name before enabling bank transfer.");return;}
+        save.disabled=true;say("paymentSettingsMessage","Saving "+names[key]+" settings…");
+        const {error}=await db.from("payment_method_settings").upsert(payload,{onConflict:"method_key"});save.disabled=false;
+        say("paymentSettingsMessage",error?"Could not save "+names[key]+": "+error.message:names[key]+" settings saved privately.");
+      });
+      card.appendChild(form);box.appendChild(card);
+    });
   }
   async function loadOrders() {
     const box=$("adminOrders"); box.textContent="Loading…";
