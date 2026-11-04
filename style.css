@@ -482,3 +482,6 @@ body{background:#050505;color:#f3eee3}
  .back-to-top{right:14px;bottom:14px;width:42px;height:42px}
 }
 @media(prefers-reduced-motion:reduce){.back-to-top,.faq-list summary span{transition:none}}
+
+/* Saved pieces */
+.save-piece{display:block;width:100%;margin:0 0 14px;padding:9px 12px;border:1px solid var(--line);background:transparent;color:var(--gold2);font-size:9px;letter-spacing:1.5px;text-align:right;transition:background .2s,color .2s}.save-piece:hover,.save-piece[aria-pressed=true]{background:rgba(196,166,106,.12);color:#f1dfb5}.saved-link span{color:var(--gold2);margin-left:3px}.saved-link.is-active{color:var(--gold2)}@media(max-width:650px){.save-piece{text-align:center}}
