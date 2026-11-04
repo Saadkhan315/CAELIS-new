@@ -21,13 +21,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const configReady = window.supabase && window.CAELIS_SUPABASE_URL && window.CAELIS_SUPABASE_ANON_KEY &&
     !String(window.CAELIS_SUPABASE_URL).includes("PASTE_") && !String(window.CAELIS_SUPABASE_ANON_KEY).includes("PASTE_");
   const db = configReady ? window.supabase.createClient(window.CAELIS_SUPABASE_URL, window.CAELIS_SUPABASE_ANON_KEY) : null;
-  const state = { products: [], variants: [], cart: readCart(), user: null, signup: false, category: "all", search: "", sort: "featured" };
+  const state = { products: [], variants: [], cart: readCart(), saved: readSaved(), savedOnly: false, user: null, signup: false, category: "all", search: "", sort: "featured" };
   const money = n => new Intl.NumberFormat("en-PK", { style: "currency", currency: "PKR", maximumFractionDigits: 0 }).format(Number(n) || 0);
   const priceOf = p => p && p.sale_price_pkr != null && Number(p.sale_price_pkr) >= 0 && Number(p.sale_price_pkr) < Number(p.price_pkr) ? Number(p.sale_price_pkr) : Number(p?.price_pkr) || 0;
   const priceMarkup = p => p && p.sale_price_pkr != null && Number(p.sale_price_pkr) >= 0 && Number(p.sale_price_pkr) < Number(p.price_pkr) ? "<span class=\"sale-price\">" + money(p.sale_price_pkr) + "</span> <del class=\"regular-price\">" + money(p.price_pkr) + "</del>" : money(p?.price_pkr);
   const dateTime = v => v ? new Intl.DateTimeFormat("en-PK", { dateStyle: "medium", timeStyle: "short" }).format(new Date(v)) : "Date unavailable";
   const safe = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
   function readCart() { try { const value = JSON.parse(localStorage.getItem("caelis-cart") || "[]"); return Array.isArray(value) ? value.filter(i => i && typeof i.variant_id === "string" && Number.isInteger(i.quantity) && i.quantity > 0 && i.quantity < 100) : []; } catch { return []; } }
+  function readSaved() { try { const value = JSON.parse(localStorage.getItem("caelis-saved") || "[]"); return Array.isArray(value) ? value.filter(id => typeof id === "string") : []; } catch { return []; } }
+  function saveSaved() { try { localStorage.setItem("caelis-saved", JSON.stringify(state.saved)); } catch { toast("Your browser could not save your list."); } }
+  function updateSavedCount() { const count = $("savedCount"); if (count) count.textContent = String(state.saved.length); }
   function saveCart() { try { localStorage.setItem("caelis-cart", JSON.stringify(state.cart)); } catch { toast("Your browser could not save the bag."); } }
   let toastTimer;
   function toast(message) { const el = $("toast"); el.textContent = message; el.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 3200); }
@@ -43,6 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
   $("accountOpen").addEventListener("click", async () => { showModal("accountModal"); await refreshAuth(); });
   $("footerAccount").addEventListener("click", async () => { showModal("accountModal"); await refreshAuth(); });
   $("cartOpen").addEventListener("click", () => { renderCart(); showModal("cartModal"); });
+  const savedOpen = $("savedOpen");
+  if (savedOpen) savedOpen.addEventListener("click", () => { state.savedOnly = !state.savedOnly; savedOpen.setAttribute("aria-pressed", String(state.savedOnly)); savedOpen.classList.toggle("is-active", state.savedOnly); renderProducts(); $("shopping").scrollIntoView({ behavior: "smooth" }); toast(state.savedOnly ? "Showing your saved pieces." : "Showing the full collection."); });
   $("footerBag").addEventListener("click", () => { renderCart(); showModal("cartModal"); });
   $("authSwitch").addEventListener("click", () => { state.signup = !state.signup; $("accountTitle").textContent = state.signup ? "Create your account." : "Welcome back."; $("authSubmit").textContent = state.signup ? "Create account" : "Sign in"; $("authSwitch").textContent = state.signup ? "Already registered? Sign in" : "Need an account? Create one"; $("authPassword").autocomplete = state.signup ? "new-password" : "current-password"; $("authForgotPassword").hidden = state.signup; });
   $("authForgotPassword").addEventListener("click", async () => {
@@ -100,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
   }
   function visibleProducts() {
-    let list = state.products.filter(p => (state.category === "all" || p.category.toLowerCase().replace(/\s+/g, "-") === state.category) && (p.name + " " + p.description + " " + p.category).toLowerCase().includes(state.search.toLowerCase()));
+    let list = state.products.filter(p => (!state.savedOnly || state.saved.includes(p.id)) && (state.category === "all" || p.category.toLowerCase().replace(/\s+/g, "-") === state.category) && (p.name + " " + p.description + " " + p.category).toLowerCase().includes(state.search.toLowerCase()));
     if (state.sort === "price-low") list.sort((a,b) => priceOf(a)-priceOf(b));
     if (state.sort === "price-high") list.sort((a,b) => priceOf(b)-priceOf(a));
     if (state.sort === "name") list.sort((a,b) => a.name.localeCompare(b.name));
@@ -119,6 +124,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const image = p.image_url ? "<img src='" + safe(p.image_url) + "' alt='" + safe(p.name) + "' loading='lazy'>" : "<div class='product-placeholder'>CAELIS</div>";
       const sizes = [...new Set(variants.map(v => v.size))], colors = [...new Set(variants.map(v => v.color))];
       card.innerHTML = "<div class='product-image-wrap'>" + image + "</div><div class='product-card-info'><p class='product-category'>" + safe(p.category) + "</p><h3>" + safe(p.name) + "</h3><p class='product-description'>" + safe(p.description) + "</p><div class='product-price'>" + priceMarkup(p) + "</div><label>Size<select class='variant-size' aria-label='Size for " + safe(p.name) + "'>" + sizes.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("") + "</select></label><label>Colour<select class='variant-color' aria-label='Colour for " + safe(p.name) + "'>" + colors.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("") + "</select></label><p class='stock-note'></p><button class='add-to-bag' type='button'>ADD TO BAG +</button></div>";
+      const saveButton = document.createElement("button"); saveButton.type = "button"; saveButton.className = "save-piece"; saveButton.setAttribute("aria-label", state.saved.includes(p.id) ? "Remove from saved pieces" : "Save this piece"); saveButton.setAttribute("aria-pressed", String(state.saved.includes(p.id))); saveButton.textContent = state.saved.includes(p.id) ? "♥ SAVED" : "♡ SAVE";
+      saveButton.addEventListener("click", () => { const exists = state.saved.includes(p.id); state.saved = exists ? state.saved.filter(id => id !== p.id) : [...state.saved, p.id]; saveSaved(); updateSavedCount(); toast(exists ? "Removed from your saved pieces." : "Added to your saved pieces."); renderProducts(); });
+      card.querySelector(".product-card-info").insertBefore(saveButton, card.querySelector(".product-card-info").firstChild);
       const sizeEl = card.querySelector(".variant-size"), colorEl = card.querySelector(".variant-color"), stockNote = card.querySelector(".stock-note"), add = card.querySelector(".add-to-bag");
       function selectedVariant() { return variants.find(v => v.size === sizeEl.value && v.color === colorEl.value); }
       function updateStock() { const v = selectedVariant(); stockNote.textContent = v && v.stock > 0 ? "Available · " + v.stock + " in stock" : "Currently unavailable"; add.disabled = !v || v.stock < 1; }
@@ -169,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("sortProducts").addEventListener("change", e => { state.sort = e.target.value; renderProducts(); });
   document.querySelectorAll("[data-collection]").forEach(a => a.addEventListener("click", () => { state.category = a.dataset.collection; $("categoryFilter").value = state.category; renderProducts(); }));
 
+  updateSavedCount();
   $("currentYear").textContent = String(new Date().getFullYear());
   const backToTop = document.querySelector(".back-to-top");
   if (backToTop) {
