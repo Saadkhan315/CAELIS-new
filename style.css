@@ -504,3 +504,5 @@ p,.muted-copy,.faq-list details p{font-weight:400}
 .payment-setting-form .payment-enable{display:flex;align-items:flex-start;gap:9px;line-height:1.6}
 .payment-setting-form .payment-enable input{width:auto;margin:3px 0 0;accent-color:var(--ice)}
 @media(max-width:760px){.payment-settings-list{grid-template-columns:1fr}}
+
+.history-tracking{padding:10px 12px;border-left:1px solid var(--ice);background:rgba(169,215,232,.045);font-size:12px;letter-spacing:.25px}.history-tracking strong{font-family:var(--serif);font-style:italic;font-weight:600;color:var(--ice)}[data-order-tracking]{min-width:190px;max-width:240px;padding:10px;background:#090b0c;border:1px solid rgba(169,215,232,.24);color:var(--ivory);font:inherit}[data-order-tracking]:focus{outline:1px solid var(--ice);border-color:var(--ice)}.admin-item-actions{gap:9px;flex-wrap:wrap}
