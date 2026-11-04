@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const counts={total:data.length,pending:data.filter(o=>o.status==="pending").length,fulfilment:data.filter(o=>["confirmed","processing","shipped"].includes(o.status)).length,delivered:data.filter(o=>o.status==="delivered").length};
     const sales=data.filter(o=>o.status!=="cancelled").reduce((sum,o)=>sum+Number(o.total_pkr||0),0);
     const metrics=$("orderMetrics");metrics.replaceChildren();
-    [["Total orders",counts.total],["Pending",counts.pending],["In fulfilment",counts.fulfilment],["Delivered",counts.delivered],["Recorded sales",money(sales)]].forEach(([label,value])=>{const card=document.createElement("article");const name=document.createElement("span");name.textContent=label;const val=document.createElement("strong");val.textContent=String(value);card.append(name,val);metrics.appendChild(card);});
+    [["Total orders",counts.total],["Pending",counts.pending],["In fulfilment",counts.fulfilment],["Delivered",counts.delivered],["Order value",money(sales)]].forEach(([label,value])=>{const card=document.createElement("article");const name=document.createElement("span");name.textContent=label;const val=document.createElement("strong");val.textContent=String(value);card.append(name,val);metrics.appendChild(card);});
   }
   function renderOrders() {
     const box=$("adminOrders"), term=$("orderSearch").value.trim().toLowerCase(), status=$("orderStatusFilter").value, from=$("orderDateFrom").value, to=$("orderDateTo").value;
