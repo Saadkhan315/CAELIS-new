@@ -168,8 +168,14 @@ document.addEventListener("DOMContentLoaded", () => {
   $("categoryFilter").addEventListener("change", e => { state.category = e.target.value; renderProducts(); });
   $("sortProducts").addEventListener("change", e => { state.sort = e.target.value; renderProducts(); });
   document.querySelectorAll("[data-collection]").forEach(a => a.addEventListener("click", () => { state.category = a.dataset.collection; $("categoryFilter").value = state.category; renderProducts(); }));
-  $("newsletterForm").addEventListener("submit", e => { e.preventDefault(); $("newsletterMessage").textContent = "Newsletter service is not connected yet. Your email has not been saved."; });
+
   $("currentYear").textContent = String(new Date().getFullYear());
+  const backToTop = document.querySelector(".back-to-top");
+  if (backToTop) {
+    const updateBackToTop = () => backToTop.classList.toggle("is-visible", window.scrollY > 520);
+    window.addEventListener("scroll", updateBackToTop, { passive: true });
+    updateBackToTop();
+  }
   async function loadCatalogue() {
     if (!db) { status("Store setup required: add the Supabase project URL and public key to supabase-config.js. No demo products are shown."); renderProducts(); renderCart(); return; }
     status("Loading the CAELIS catalogue…");
