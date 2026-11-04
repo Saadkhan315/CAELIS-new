@@ -488,3 +488,19 @@ body{background:#050505;color:#f3eee3}
 
 /* CAELIS refined ice-blue accents */
 .announcement{border-bottom-color:rgba(169,215,232,.18)}.announcement i{background:var(--ice)}.eyebrow-line,.label-rule{background:linear-gradient(90deg,var(--gold),var(--ice))}.hero-shade{background:linear-gradient(90deg,rgba(4,4,4,.95) 0%,rgba(4,4,4,.78) 39%,rgba(8,24,31,.22) 100%),linear-gradient(0deg,rgba(4,4,4,.68),transparent 45%)}.hero-index b,.scroll-cue span{color:var(--ice)}.hero-index b{ text-shadow:0 0 24px rgba(169,215,232,.22)}.gold-button:hover,.button-gold:hover{border-color:var(--ice);color:var(--ice)}.collection-link b,.text-link span{color:var(--ice)}.service-strip>div>span{color:var(--ice)}.faq-list details{border-bottom-color:rgba(169,215,232,.16)}.faq-list summary span{color:var(--ice)}.store-tools input:focus,.store-tools select:focus,.stack-form input:focus,.stack-form select:focus{border-color:var(--ice);box-shadow:0 0 0 3px rgba(169,215,232,.08)}.save-piece{border-color:rgba(169,215,232,.28)}.save-piece:hover,.save-piece[aria-pressed=true]{background:var(--ice-soft);color:var(--ice)}.site-header{border-bottom-color:rgba(169,215,232,.12)}.navigation .bag-link{border-color:rgba(169,215,232,.25)}
+
+/* CAELIS editorial typography and private payment configuration */
+h1,h2,h3,.hero-title,.section-heading h2,.collection-card h3,.faq-heading h2{font-family:var(--serif);font-weight:500;letter-spacing:-.025em}
+h1 em,h2 em,h3 em,.hero-title em,.section-heading em,.collection-card em{font-style:italic;font-weight:500}
+.eyebrow,.section-label,.product-category,.footer-tagline{font-style:italic;letter-spacing:2px}
+p,.muted-copy,.faq-list details p{font-weight:400}
+.payment-settings-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:24px}
+.payment-setting-card{padding:22px;border:1px solid rgba(169,215,232,.2);background:linear-gradient(145deg,rgba(169,215,232,.045),rgba(196,166,106,.035));border-radius:2px}
+.payment-setting-card h3{font-family:var(--serif);font-style:italic;font-size:25px;color:var(--gold2);margin-bottom:15px}
+.payment-setting-form{gap:12px}
+.payment-setting-form label{font-size:10px;letter-spacing:.7px;color:var(--muted)}
+.payment-setting-form input,.payment-setting-form textarea{width:100%;margin-top:6px;padding:11px 12px;background:#090b0c;border:1px solid rgba(169,215,232,.22);color:var(--ivory);border-radius:0}
+.payment-setting-form input:focus,.payment-setting-form textarea:focus{outline:1px solid var(--ice);border-color:var(--ice)}
+.payment-setting-form .payment-enable{display:flex;align-items:flex-start;gap:9px;line-height:1.6}
+.payment-setting-form .payment-enable input{width:auto;margin:3px 0 0;accent-color:var(--ice)}
+@media(max-width:760px){.payment-settings-list{grid-template-columns:1fr}}
