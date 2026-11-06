@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const configReady = window.supabase && window.CAELIS_SUPABASE_URL && window.CAELIS_SUPABASE_ANON_KEY &&
     !String(window.CAELIS_SUPABASE_URL).includes("PASTE_") && !String(window.CAELIS_SUPABASE_ANON_KEY).includes("PASTE_");
   const db = configReady ? window.supabase.createClient(window.CAELIS_SUPABASE_URL, window.CAELIS_SUPABASE_ANON_KEY) : null;
-  const state = { products: [], variants: [], cart: readCart(), saved: readSaved(), savedOnly: false, user: null, signup: false, category: "all", search: "", sort: "featured" };
+  const state = { products: [], variants: [], images: [], cart: readCart(), saved: readSaved(), savedOnly: false, user: null, signup: false, category: "all", search: "", sort: "featured" };
   const money = n => new Intl.NumberFormat("en-PK", { style: "currency", currency: "PKR", maximumFractionDigits: 0 }).format(Number(n) || 0);
   const priceOf = p => p && p.sale_price_pkr != null && Number(p.sale_price_pkr) >= 0 && Number(p.sale_price_pkr) < Number(p.price_pkr) ? Number(p.sale_price_pkr) : Number(p?.price_pkr) || 0;
   const priceMarkup = p => p && p.sale_price_pkr != null && Number(p.sale_price_pkr) >= 0 && Number(p.sale_price_pkr) < Number(p.price_pkr) ? "<span class=\"sale-price\">" + money(p.sale_price_pkr) + "</span> <del class=\"regular-price\">" + money(p.price_pkr) + "</del>" : money(p?.price_pkr);
@@ -118,6 +118,10 @@ document.addEventListener("DOMContentLoaded", () => {
     image.alt = product.name;
     image.onclick = () => { if (!image.hidden) { $("zoomImage").src = image.src; $("zoomImage").alt = image.alt; showModal("imageZoomModal"); } };
     image.hidden = !product.image_url;
+    const gallery = state.images.filter(item => item.product_id === product.id);
+    const galleryBox = $("detailGallery"); galleryBox.replaceChildren();
+    gallery.forEach((photo,index)=>{const thumb=document.createElement("button");thumb.type="button";thumb.className="detail-thumbnail";thumb.setAttribute("aria-label","View product photograph "+(index+1));const thumbImage=document.createElement("img");thumbImage.src=photo.image_url;thumbImage.alt=photo.alt_text||product.name;thumb.addEventListener("click",()=>{image.src=photo.image_url;image.alt=thumbImage.alt;image.hidden=false;});thumb.appendChild(thumbImage);galleryBox.appendChild(thumb);});
+
     $("detailCategory").textContent = product.category || "CAELIS";
     $("detailName").textContent = product.name;
     $("detailDescription").textContent = product.description || "A considered CAELIS piece.";
@@ -214,6 +218,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const { data: products, error: productError } = await db.from("products").select("id,name,description,category,price_pkr,sale_price_pkr,image_url").eq("active", true).order("created_at", { ascending: false });
     if (productError) { status("Catalogue connection failed. Check that supabase-schema.sql was run in your Supabase project."); console.error(productError); return; }
     state.products = products || [];
+    const {data:galleryImages,error:galleryError}=await db.from("product_images").select("id,product_id,image_url,alt_text,sort_order").in("product_id",(products||[]).map(p=>p.id)).order("sort_order");
+    state.images=galleryError?[]:(galleryImages||[]);
+
     const ids = state.products.map(p => p.id);
     if (!ids.length) { state.variants = []; renderProducts(); renderCart(); return; }
     const { data: variants, error: variantError } = await db.from("product_variants").select("id,product_id,size,color,sku,stock").in("product_id", ids);
