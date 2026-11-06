@@ -116,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const image = $("detailImage");
     image.src = product.image_url || "";
     image.alt = product.name;
+    image.onclick = () => { if (!image.hidden) { $("zoomImage").src = image.src; $("zoomImage").alt = image.alt; showModal("imageZoomModal"); } };
     image.hidden = !product.image_url;
     $("detailCategory").textContent = product.category || "CAELIS";
     $("detailName").textContent = product.name;
