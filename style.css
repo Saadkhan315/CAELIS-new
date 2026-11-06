@@ -568,3 +568,8 @@ p,.muted-copy,.faq-list details p{font-weight:400}
 .admin-gallery-actions{display:flex;flex-wrap:wrap;gap:4px}
 .admin-gallery-actions button{flex:1;min-width:26px;padding:6px 4px;font-size:9px}
 .admin-gallery-actions button:disabled{opacity:.45;cursor:not-allowed}
+
+.checkout-country-note{display:flex;flex-direction:column;gap:4px;padding:12px 14px;margin:8px 0;border:1px solid rgba(169,215,232,.25);border-left:2px solid var(--ice);background:rgba(169,215,232,.045)}
+.checkout-country-note strong{color:var(--gold2);font-family:var(--serif);font-style:italic;font-size:18px}
+.checkout-country-note span{color:#bdb8ae;font-size:10px;letter-spacing:.5px}
+#checkoutPhone:invalid:not(:placeholder-shown){border-color:#b87575}
