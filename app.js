@@ -111,6 +111,27 @@ document.addEventListener("DOMContentLoaded", () => {
     if (state.sort === "name") list.sort((a,b) => a.name.localeCompare(b.name));
     return list;
   }
+  function openProductDetails(product, variants) {
+    const modal = $("productDetailModal");
+    const image = $("detailImage");
+    image.src = product.image_url || "";
+    image.alt = product.name;
+    image.hidden = !product.image_url;
+    $("detailCategory").textContent = product.category || "CAELIS";
+    $("detailName").textContent = product.name;
+    $("detailDescription").textContent = product.description || "A considered CAELIS piece.";
+    $("detailPrice").innerHTML = priceMarkup(product);
+    const sizes = [...new Set(variants.map(v => v.size))];
+    const colors = [...new Set(variants.map(v => v.color))];
+    $("detailSize").innerHTML = sizes.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("");
+    $("detailColor").innerHTML = colors.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("");
+    const note = $("detailStock"), add = $("detailAdd");
+    function selected() { return variants.find(v => v.size === $("detailSize").value && v.color === $("detailColor").value); }
+    function refresh() { const v = selected(); note.textContent = v && v.stock > 0 ? "Available · " + v.stock + " in stock" : "Currently unavailable"; add.disabled = !v || v.stock < 1; }
+    $("detailSize").onchange = refresh; $("detailColor").onchange = refresh;
+    add.onclick = () => { const v = selected(); if (!v || v.stock < 1) return; const line = state.cart.find(i => i.variant_id === v.id); if (line) line.quantity = Math.min(20, line.quantity + 1); else state.cart.push({ variant_id: v.id, quantity: 1 }); saveCart(); renderCart(); hideModal("productDetailModal"); toast(product.name + " added to your bag."); };
+    refresh(); showModal("productDetailModal");
+  }
   function renderProducts() {
     const grid = $("productGrid"); grid.replaceChildren(); const list = visibleProducts();
     const tools = document.querySelector(".store-tools");
@@ -123,10 +144,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement("article"); card.className = "product-card"; card.style.animationDelay = Math.min(index * 50, 250) + "ms";
       const image = p.image_url ? "<img src='" + safe(p.image_url) + "' alt='" + safe(p.name) + "' loading='lazy'>" : "<div class='product-placeholder'>CAELIS</div>";
       const sizes = [...new Set(variants.map(v => v.size))], colors = [...new Set(variants.map(v => v.color))];
-      card.innerHTML = "<div class='product-image-wrap'>" + image + "</div><div class='product-card-info'><p class='product-category'>" + safe(p.category) + "</p><h3>" + safe(p.name) + "</h3><p class='product-description'>" + safe(p.description) + "</p><div class='product-price'>" + priceMarkup(p) + "</div><label>Size<select class='variant-size' aria-label='Size for " + safe(p.name) + "'>" + sizes.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("") + "</select></label><label>Colour<select class='variant-color' aria-label='Colour for " + safe(p.name) + "'>" + colors.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("") + "</select></label><p class='stock-note'></p><button class='add-to-bag' type='button'>ADD TO BAG +</button></div>";
+      card.innerHTML = "<div class='product-image-wrap'>" + image + "</div><div class='product-card-info'><p class='product-category'>" + safe(p.category) + "</p><h3>" + safe(p.name) + "</h3><button class='view-details' type='button'>DISCOVER THIS PIECE ↗</button><p class='product-description'>" + safe(p.description) + "</p><div class='product-price'>" + priceMarkup(p) + "</div><label>Size<select class='variant-size' aria-label='Size for " + safe(p.name) + "'>" + sizes.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("") + "</select></label><label>Colour<select class='variant-color' aria-label='Colour for " + safe(p.name) + "'>" + colors.map(v => "<option value='" + safe(v) + "'>" + safe(v) + "</option>").join("") + "</select></label><p class='stock-note'></p><button class='add-to-bag' type='button'>ADD TO BAG +</button></div>";
       const saveButton = document.createElement("button"); saveButton.type = "button"; saveButton.className = "save-piece"; saveButton.setAttribute("aria-label", state.saved.includes(p.id) ? "Remove from saved pieces" : "Save this piece"); saveButton.setAttribute("aria-pressed", String(state.saved.includes(p.id))); saveButton.textContent = state.saved.includes(p.id) ? "♥ SAVED" : "♡ SAVE";
       saveButton.addEventListener("click", () => { const exists = state.saved.includes(p.id); state.saved = exists ? state.saved.filter(id => id !== p.id) : [...state.saved, p.id]; saveSaved(); updateSavedCount(); toast(exists ? "Removed from your saved pieces." : "Added to your saved pieces."); renderProducts(); });
       card.querySelector(".product-card-info").insertBefore(saveButton, card.querySelector(".product-card-info").firstChild);
+      card.querySelector(".view-details").addEventListener("click", () => openProductDetails(p, variants));
       const sizeEl = card.querySelector(".variant-size"), colorEl = card.querySelector(".variant-color"), stockNote = card.querySelector(".stock-note"), add = card.querySelector(".add-to-bag");
       function selectedVariant() { return variants.find(v => v.size === sizeEl.value && v.color === colorEl.value); }
       function updateStock() { const v = selectedVariant(); stockNote.textContent = v && v.stock > 0 ? "Available · " + v.stock + " in stock" : "Currently unavailable"; add.disabled = !v || v.stock < 1; }
