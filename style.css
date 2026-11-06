@@ -541,3 +541,10 @@ p,.muted-copy,.faq-list details p{font-weight:400}
 .detail-copy .button{width:100%;margin-top:12px}
 .detail-note{margin-top:18px;color:var(--ice);font:italic 13px var(--serif)}
 @media(max-width:650px){.detail-layout{grid-template-columns:1fr;gap:20px}.detail-visual{min-height:240px;max-height:340px}.product-detail-modal{max-height:90vh;overflow:auto}}
+
+/* CAELIS image viewing */
+.detail-visual img{cursor:zoom-in}
+.image-zoom-backdrop{z-index:120;align-items:center;justify-content:center;padding:24px}
+.image-zoom-card{position:relative;width:min(100%,1000px);max-height:92vh;display:flex;align-items:center;justify-content:center;background:#080909;border:1px solid rgba(169,215,232,.35);padding:14px}
+.image-zoom-card img{display:block;max-width:100%;max-height:86vh;object-fit:contain}
+.image-zoom-card .modal-close{z-index:2;top:8px;right:8px;background:rgba(0,0,0,.8);color:var(--ivory);border-color:var(--ice)}
