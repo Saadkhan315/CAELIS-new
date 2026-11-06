@@ -548,3 +548,17 @@ p,.muted-copy,.faq-list details p{font-weight:400}
 .image-zoom-card{position:relative;width:min(100%,1000px);max-height:92vh;display:flex;align-items:center;justify-content:center;background:#080909;border:1px solid rgba(169,215,232,.35);padding:14px}
 .image-zoom-card img{display:block;max-width:100%;max-height:86vh;object-fit:contain}
 .image-zoom-card .modal-close{z-index:2;top:8px;right:8px;background:rgba(0,0,0,.8);color:var(--ivory);border-color:var(--ice)}
+
+/* CAELIS multi-image gallery */
+.admin-gallery-manager{margin-top:18px;padding:16px;border:1px solid rgba(169,215,232,.22);background:rgba(169,215,232,.035);border-radius:8px}
+.admin-gallery-manager h3{font-family:var(--serif);font-style:italic;color:var(--ivory);font-size:22px;margin:0 0 6px}
+.admin-gallery-manager input[type=file]{display:block;max-width:100%;margin:12px 0;color:var(--ivory);font-size:12px}
+.admin-gallery-thumbs,.detail-gallery-thumbnails{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.admin-gallery-thumb{width:94px;display:grid;gap:5px}
+.admin-gallery-thumb img,.detail-thumbnail img{width:100%;height:92px;object-fit:cover;background:#151719;border:1px solid rgba(169,215,232,.25)}
+.admin-gallery-thumb button{font-size:10px;padding:6px;background:transparent;color:var(--ice);border:1px solid rgba(169,215,232,.25)}
+.detail-visual{position:relative;display:block;padding:12px}
+.detail-visual>img{display:block;width:100%;max-height:500px;object-fit:contain;margin:auto}
+.detail-gallery-thumbnails{justify-content:center}
+.detail-thumbnail{width:66px;padding:3px;background:#101112;border:1px solid rgba(169,215,232,.25);cursor:pointer}
+.detail-thumbnail img{height:62px;border:0}
